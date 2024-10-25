@@ -8,10 +8,10 @@
 # Querydsl
 /src/main/generated
 
-# docker-compose.yml
-compose.yml
+# docker
+docker-compose.yml
 
-# myslq volume
+# mysql volume
 /db/mysql/data/
 
 # User-specific stuff
