@@ -28,6 +28,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+    
     implementation 'mysql:mysql-connector-java:8.0.33'
 
     compileOnly 'org.projectlombok:lombok'
@@ -38,6 +42,14 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // 스프링 배치
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    // spring cloud
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.3")
+    // rest통신
+    implementation'org.springframework.cloud:spring-cloud-starter-openfeign'
+    // xml로 오는 데이터 json으로 변환
+    implementation 'org.json:json:20210307'
 }
 
 jar {
