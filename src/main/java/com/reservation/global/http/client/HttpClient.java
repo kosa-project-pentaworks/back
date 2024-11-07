@@ -1,6 +1,5 @@
 package com.reservation.global.http.client;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
