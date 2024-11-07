@@ -41,6 +41,7 @@ public class KakaoUserHttpClient implements KakaoUserPort {
         return UserDto.builder()
                 .username(nickname)
                 .providerId(providerId.toString())
+                .provider("kakao")
                 .build();
     }
 }

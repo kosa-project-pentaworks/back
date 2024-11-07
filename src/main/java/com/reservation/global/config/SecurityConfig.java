@@ -29,27 +29,29 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.formLogin(AbstractHttpConfigurer::disable);
-        httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.httpBasic(AbstractHttpConfigurer::disable);
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-        httpSecurity.authorizeHttpRequests(a ->
-                a.requestMatchers("/",
-                                "/register",
-                                "/api/v1/user/**",
-                                "/api/v1/auth/**").permitAll()
-                        .anyRequest().authenticated());
-        httpSecurity.oauth2Login(oauth2 -> oauth2
-                .failureUrl("/login?error=true")
+        http.userDetailsService(customUserDetailsService);
+
+        http.authorizeHttpRequests(auth ->
+                auth.requestMatchers(
+                                "/",
+                                "/api/v1/user/register",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/callback"
+                        ).permitAll()
+                        .anyRequest().authenticated()
         );
 
-        httpSecurity.userDetailsService(customUserDetailsService);
+        http.oauth2Login(oauth2 -> oauth2.failureUrl("/login?error=true"));
 
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return httpSecurity.build();
+        return http.build();
     }
 
     @Bean
@@ -57,14 +59,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    CorsConfigurationSource corsConfigurationSource() {
+    private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("*"));
-            config.setAllowCredentials(true);
-            return config;
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
+            configuration.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
+            configuration.setAllowedOriginPatterns(Collections.singletonList(CorsConfiguration.ALL));
+            configuration.setAllowCredentials(true);
+
+            return configuration;
         };
     }
 }
