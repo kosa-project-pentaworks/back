@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>Layout page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="no-referrer" name="referrer"/>
+    <link href="/css/library/bootstrap/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="/js/library/jquery/jquery-3.7.1.min.js"></script>
+    <script src="/js/library/axios/axios.min.js"></script>
+    <style>
+        @media (max-width: 768px) {
+    #main-content {
+        padding: 10px; /* 작은 화면에서는 패딩 조정 */
+    }
+    footer {
+        font-size: 12px; /* 작은 화면에서는 글자 크기 조정 */
+    }
+}
+
+@media (max-width: 480px) {
+    header, footer {
+        text-align: center; /* 아주 작은 화면에서는 정렬 조정 */
+    }
+}
+
+        html, body {
+            height: 100%; /* Make sure the body and html take full height */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #main-content {
+            flex: 1; /* Allow the main content to grow and take available space */
+            min-height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        footer {
+            margin-top: auto; /* Push footer to the bottom */
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<div class="main-container" id="main-content" layout:fragment="content"></div>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="/js/library/bootstrap/bootstrap.bundle.js"></script>
+
+</body>
+</html>

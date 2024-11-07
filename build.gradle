@@ -81,6 +81,16 @@ dependencies {
 tasks.named("test") {
     useJUnitPlatform()
     enabled = false
+    
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // 스프링 배치
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    // spring cloud
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.3")
+    // rest통신
+    implementation'org.springframework.cloud:spring-cloud-starter-openfeign'
+    // xml로 오는 데이터 json으로 변환
+    implementation 'org.json:json:20210307'
 }
 
 jar {
