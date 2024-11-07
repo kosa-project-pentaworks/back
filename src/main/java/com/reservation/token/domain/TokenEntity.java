@@ -18,8 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenEntity extends MutableBaseEntity {
 
-    @Id
-    @Column(name = "token_id") private String tokenId;
+    @Id @Column(name = "token_id") private String tokenId;
 
     @Column(name = "user_id") private String userId;
 
