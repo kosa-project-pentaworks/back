@@ -7,7 +7,6 @@ logging:
 spring:
   datasource:
     url: ${DB_URL}
-    driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   batch:
@@ -26,8 +25,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ed8b6790f78a6a4ddafca967ff14da73
-            client-secret: hcG8hJYUMU5HfdJxSy7pYRONkSG7ypbF
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
             client-name: Kakao
             authorization-grant-type: authorization_code
             redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
@@ -41,7 +40,7 @@ spring:
             user-name-attribute: id
 
 jwt:
-  secret: db6lxVLYFEruQrKlqXzGKsuygzX0h/6lJHVFNi6AArb40pCOErtYH8sStEvMISKr9J1HlN0ZTx25vNrXa6Rc2A==
+  secret: ${JWT_SECRET}
   expire:
     access-token: 1
     refresh-token: 24
