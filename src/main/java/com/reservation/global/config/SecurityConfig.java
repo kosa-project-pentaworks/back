@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/",
                                 "/api/v1/user/register",
                                 "/api/v1/auth/login",
-                                "/api/v1/auth/callback"
+                                "/api/v1/auth/callback",
+                                "/api/v1/hospital/search"
                         ).permitAll()
                         .anyRequest().authenticated()
         );

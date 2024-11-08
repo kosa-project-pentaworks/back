@@ -1,7 +1,7 @@
 package com.reservation.hospitals.batch;
 
 import com.reservation.hospitals.controller.HospitalDataClient;
-import com.reservation.hospitals.domain.Hospital;
+import com.reservation.hospitals.domain.HospitalEntity;
 import com.reservation.hospitals.repository.HospitalRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -12,7 +12,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -39,7 +38,7 @@ public class HospitalDataBatch {
     @Bean
     public Step hospitalDataStep() {
         return new StepBuilder("hospitalDataStep", jobRepository)
-            .<Hospital, Hospital> chunk(10, platformTransactionManager)
+            .<HospitalEntity, HospitalEntity> chunk(10, platformTransactionManager)
             .reader(hospitalDataReader())
             .writer(hospitalDataWriter())
             .faultTolerant()
@@ -49,12 +48,12 @@ public class HospitalDataBatch {
     }
 
     @Bean
-    public ItemReader<Hospital> hospitalDataReader() {
+    public ItemReader<HospitalEntity> hospitalDataReader() {
         return new HospitalDataReader(hospitalDataClient);
     }
 
     @Bean
-    public ItemWriter<Hospital> hospitalDataWriter() {
+    public ItemWriter<HospitalEntity> hospitalDataWriter() {
         return new HospotalDataWriter(hospitalRepository);
     }
 
