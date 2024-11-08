@@ -15,12 +15,8 @@ COPY . /app
 RUN ./gradlew bootJar --no-daemon
 
 # Step 2: Runtime Stage
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre AS runtime
 WORKDIR /app
-
-# 빌드된 JAR 파일 복사
 COPY --from=build /app/build/libs/*.jar app.jar
-
-# 애플리케이션 실행
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
