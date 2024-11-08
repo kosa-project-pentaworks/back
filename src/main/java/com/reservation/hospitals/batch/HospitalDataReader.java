@@ -1,7 +1,7 @@
 package com.reservation.hospitals.batch;
 
 import com.reservation.hospitals.controller.HospitalDataClient;
-import com.reservation.hospitals.domain.Hospital;
+import com.reservation.hospitals.domain.HospitalEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class HospitalDataReader implements ItemStreamReader<Hospital> {
+public class HospitalDataReader implements ItemStreamReader<HospitalEntity> {
     private final HospitalDataClient hospitalDataClient;
-    private Iterator<Hospital> hospitalIterator;
+    private Iterator<HospitalEntity> hospitalIterator;
 
     public HospitalDataReader(HospitalDataClient hospitalDataClient) {
         this.hospitalDataClient = hospitalDataClient;
@@ -21,7 +21,7 @@ public class HospitalDataReader implements ItemStreamReader<Hospital> {
 
 
     @Override
-    public Hospital read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public HospitalEntity read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
         if(hospitalIterator != null && hospitalIterator.hasNext()){
             return hospitalIterator.next();
         }else{
@@ -32,18 +32,18 @@ public class HospitalDataReader implements ItemStreamReader<Hospital> {
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
         int hospitalTotalCount = hopitalTotalGetCount();
-        List<Hospital> hospitalList = hospitalGetData(hospitalTotalCount);
-        this.hospitalIterator = hospitalList.iterator();
+        List<HospitalEntity> hospitalEntityList = hospitalGetData(hospitalTotalCount);
+        this.hospitalIterator = hospitalEntityList.iterator();
     }
 
-    private List<Hospital> hospitalGetData(int hospitalTotalCount) {
+    private List<HospitalEntity> hospitalGetData(int hospitalTotalCount) {
         String result = hospitalDataClient.getAllData(hospitalTotalCount);
         JSONObject jsonObject = XML.toJSONObject(result);
         JSONArray jsonHospitalArr = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item");
-        List<Hospital> hospitalGetDataList = new ArrayList<>();
+        List<HospitalEntity> hospitalEntityGetDataList = new ArrayList<>();
         for(int i = 0; i < jsonHospitalArr.length(); i++){
             JSONObject hospitalData = jsonHospitalArr.getJSONObject(i);
-            Hospital hospotal = Hospital.builder()
+            HospitalEntity hospotal = HospitalEntity.builder()
                 .addr(hospitalData.getString("addr"))
                 .clCd(hospitalData.getInt("clCd"))
                 .clCdNm(hospitalData.getString("clCdNm"))
@@ -59,9 +59,9 @@ public class HospitalDataReader implements ItemStreamReader<Hospital> {
                 .yadmNm(hospitalData.getString("yadmNm"))
                 .ykiho(hospitalData.getString("ykiho"))
                 .build();
-            hospitalGetDataList.add(hospotal);
+            hospitalEntityGetDataList.add(hospotal);
         }
-        return hospitalGetDataList;
+        return hospitalEntityGetDataList;
     }
 
     private int hopitalTotalGetCount() {

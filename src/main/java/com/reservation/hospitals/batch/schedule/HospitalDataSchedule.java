@@ -1,17 +1,15 @@
-//package com.reservation.hospitals.batch.schedule;
+package com.reservation.hospitals.batch.schedule;//package com.reservation.hospitals.batch.schedule;
 //
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.batch.core.Job;
 //import org.springframework.batch.core.JobParametersBuilder;
 //import org.springframework.batch.core.JobParametersInvalidException;
 //import org.springframework.batch.core.configuration.JobRegistry;
-//import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
 //import org.springframework.batch.core.launch.JobLauncher;
 //import org.springframework.batch.core.launch.NoSuchJobException;
 //import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 //import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 //import org.springframework.batch.core.repository.JobRestartException;
-//import org.springframework.context.annotation.Bean;
 //import org.springframework.scheduling.annotation.Scheduled;
 //import org.springframework.stereotype.Component;
 //

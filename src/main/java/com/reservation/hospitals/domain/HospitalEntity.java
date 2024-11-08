@@ -1,11 +1,13 @@
 package com.reservation.hospitals.domain;
 
+import com.reservation.hospitalReviews.domain.HospitalReviewEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,46 +18,50 @@ import org.hibernate.annotations.ColumnDefault;
         @Index(name="idx_hopital_sido_cd_nm",columnList = "sidoCdNm")
     }
 )
-public class Hospital {
+public class HospitalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(length = 150, nullable = false)
+    @Column(name = "hosp_id")
+    private Long hospId;
+    @Column(name = "addr", length = 150, nullable = false)
     private String addr;
-    @Column(length = 4)
+    @Column(name = "cl_cd", length = 4)
     private int clCd;
-    @Column(length = 16, nullable = false)
+    @Column(name = "cl_cd_nm", length = 16, nullable = false)
     private String clCdNm;
-    @Column(length = 16)
+    @Column(name = "emdong_nm", length = 16)
     private String emdongNm;
-    @Column(length = 10)
+    @Column(name = "estb_dd", length = 10)
     private String estbDd;
-    @Column(length = 100)
+    @Column(name = "hosp_url", length = 100)
     private String hospUrl;
-    @Column(length = 5, nullable = false)
+    @Column(name = "post_no", length = 5, nullable = false)
     private int postNo;
-    @Column(length = 7, nullable = false)
+    @Column(name = "sggu_cd", length = 7, nullable = false)
     private int sgguCd;
-    @Column(length = 20, nullable = false)
+    @Column(name = "sggu_cd_nm", length = 20, nullable = false)
     private String sgguCdNm;
-    @Column(length = 10, nullable = false)
+    @Column(name = "sido_cd", length = 10, nullable = false)
     private int sidoCd;
-    @Column(length = 10, nullable = false)
+    @Column(name = "sido_cd_nm", length = 10, nullable = false)
     private String sidoCdNm;
-    @Column(length = 15)
+    @Column(name = "telno", length = 15)
     private String telno;
-    @Column(length = 60, nullable = false)
+    @Column(name = "yadm_nm",length = 60, nullable = false)
     private String yadmNm;
-    @Column(nullable = false)
+    @Column(name = "ykiho", nullable = false)
     private String ykiho;
     @Enumerated(EnumType.STRING)
-    @Column(length = 5, nullable = false)
-//    @ColumnDefault("HospStatus.OPEN")
+    @Column(name = "hosp_status", length = 5, nullable = false)
     private HospStatus hospStatus;
+    @OneToOne(mappedBy = "hospitalEntity")
+    private HospitalAdmin hospitalAdmin;
+    @OneToMany(mappedBy = "hospitalEntity")
+    private List<HospitalReviewEntity> hospitalReviewEntity;
 
 
-    public Hospital(Hospital hospital,HospStatus hospStatus) {
-        this.id = hospital.getId();
+    public HospitalEntity(HospitalEntity hospital,HospStatus hospStatus) {
+        this.hospId = hospital.getHospId();
         this.addr = hospital.getAddr();
         this.clCd = hospital.getClCd();
         this.clCdNm =hospital.getClCdNm();
@@ -74,7 +80,7 @@ public class Hospital {
     }
 
     @Builder
-    private Hospital(String addr, int clCd, String clCdNm, String emdongNm, String estbDd, String hospUrl, int postNo, int sgguCd, String sgguCdNm, int sidoCd, String sidoCdNm, String telno, String yadmNm, String ykiho) {
+    private HospitalEntity(String addr, int clCd, String clCdNm, String emdongNm, String estbDd, String hospUrl, int postNo, int sgguCd, String sgguCdNm, int sidoCd, String sidoCdNm, String telno, String yadmNm, String ykiho) {
         this.addr = addr;
         this.clCd = clCd;
         this.clCdNm = clCdNm;
