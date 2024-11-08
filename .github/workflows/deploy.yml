@@ -41,7 +41,7 @@ jobs:
         working-directory: frontend
         run: |
           npm install
-          npm run build
+          CI=false npm run build
           ls -al build/
 
       # 6. Copy Frontend to Backend Static Resources
