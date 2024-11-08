@@ -78,7 +78,7 @@ jobs:
           docker pull sjnnj/reservation:latest
           docker run -d -p 8080:8080 --name reservation \
             --name reservation \
-            -e RDS_ENDPOINT=${{ secrets.RDS_ENDPOINT }} \
+            -e RDS_ENDPOINT=mysqlinstance.cn4sau8egdam.ap-northeast-2.rds.amazonaws.com \
             -e DATABASE_NAME=${{ secrets.DATABASE_NAME }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
