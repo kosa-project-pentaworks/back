@@ -37,7 +37,6 @@ jobs:
           ls -al build/libs/
 
       # 5. Build Frontend
-      # Node.js 환경은 기본으로 제공되므로 actions/setup-node를 제거
       - name: Build Frontend
         working-directory: frontend
         run: |
