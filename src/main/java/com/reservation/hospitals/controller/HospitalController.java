@@ -48,8 +48,6 @@ public class HospitalController {
         @RequestParam(value = "page",defaultValue = "1") int page,
         @RequestParam(value ="size" ,defaultValue = "10") int size
     ){
-        System.out.println("sidoCdNm ==?>" + sidoCdNm);
-        System.out.println("sgguCdNm ==?>" + sgguCdNm);
         HospitalsPageResponse hospitalsPages = hospitalService.searchHospital(sidoCdNm,sgguCdNm,keyWord,size,page);
         return CustomApiResponse.ok(hospitalsPages);
     }
