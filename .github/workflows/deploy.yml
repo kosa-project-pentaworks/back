@@ -43,6 +43,15 @@ jobs:
           npm install
           CI=false npm run build
           ls -al build/
+      - name: Ensure Static Directory Exists
+        run: mkdir -p src/main/resources/static
+
+      - name: Debug Directories
+        run: |
+          ls -al src/main/resources/
+          ls -al frontend/build/
+      - name: Copy Frontend to Backend Static Resources
+        run: cp -r frontend/build/. src/main/resources/static/
 
       # 6. Copy Frontend to Backend Static Resources
       - name: Copy Frontend to Backend Static Resources
