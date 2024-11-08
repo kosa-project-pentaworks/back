@@ -5,8 +5,6 @@ import ReservationModal from "./ReservationModal";
 
 function Dashboard() {
   const [page, setPage] = useState("0");
-  const isFirstRender = useRef();
-
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달창 열때
   const [selectedHospital, setSelectedHospital] = useState(null); // 모달창 열었을때 정보
 
@@ -91,7 +89,7 @@ function Dashboard() {
         onChange={onChangeKeyWord}
       />
       <Location onChangeSearchLocation={onChangeSearchLocation} />
-      <button onClick={getHospitals}>병원 조회</button>
+      <button onClick={onClickSearch}>병원 조회</button>
       <div className="container mt-4">
         {hospitalPages.hospitals.map((item) => (
           <ul style={{ listStyleType: "none", padding: 0 }}>
