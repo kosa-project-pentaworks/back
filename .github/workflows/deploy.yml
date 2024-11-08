@@ -10,42 +10,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. GitHub Repository Checkout
       - name: Check out the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
+      # 2. Set up Java (JDK 17)
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
+          distribution: 'temurin'
 
+      # 3. Cache Gradle Packages
       - name: Cache Gradle packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      # 4. Build Backend with Gradle
       - name: Build Backend with Gradle
         run: ./gradlew build
 
+      # 5. Cache Node Modules for Frontend
+      - name: Cache Node Modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      # 6. Build Frontend
       - name: Build Frontend
         working-directory: frontend
         run: |
           npm install
           npm run build
 
+      # 7. Copy Frontend to Backend Static Resources
       - name: Copy Frontend to Backend Static Resources
         run: cp -r frontend/build/* src/main/resources/static/
 
+      # 8. Build Docker Image
       - name: Build Docker Image
         run: docker build -t sjnnj/reservation:latest .
 
+      # 9. Login to Docker Hub
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # 10. Push Docker Image to Docker Hub
       - name: Push Docker Image to Docker Hub
         run: docker push sjnnj/reservation:latest
