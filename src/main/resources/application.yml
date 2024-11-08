@@ -6,9 +6,10 @@ logging:
 
 spring:
   datasource:
-    url: ${DB_URL}
+    url: jdbc:mysql://${RDS_ENDPOINT}:3306/${DATABASE_NAME>}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   batch:
     job:
       enabled: false
