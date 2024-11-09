@@ -82,6 +82,7 @@ jobs:
       # 13. Remove Old Docker Images
       - name: Remove Old Docker Images
         run: |
+          docker images -q --filter "dangling=true" | xargs -r docker rmi
           docker images -q sjnnj/reservation --filter "dangling=false" | xargs -r docker rmi
 
       # 14. Run New Docker Container
