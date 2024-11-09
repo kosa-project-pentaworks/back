@@ -80,5 +80,5 @@ jobs:
             --name reservation \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e RDS_ENDPOINT=mysql.cj0kww66cm6b.ap-northeast-2.rds.amazonaws.com \
             sjnnj/reservation:latest
-          
