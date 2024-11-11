@@ -66,10 +66,9 @@ jobs:
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
           echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
           echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
-          echo "SPRING_PROFILES_ACTIVE=prod" >> .env
 
       - name: docker app service container start
-        run: docker-compose —env-file .env up -d app
+        run: docker-compose ——env-file .env up -d app
 
       - name: Clean Up Unused Docker Resources
         run: docker system prune -f
