@@ -1,80 +1,58 @@
-name: CI/CD Pipeline
-
+name: on-container-cicd
+# main 브랜치로의 push와 pull request 이벤트가 발생할 때마다 워크플로우가 실행
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       # 1. GitHub Repository Checkout
-      - name: Check out the repository
-        uses: actions/checkout@v3
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
       # 2. Set up Java (JDK 17)
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Cache Gradle Packages
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      # 3. Grant execute permission for gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      # 4. Build Backend with Gradle
-      - name: Build Backend with Gradle
-        run: |
-          ./gradlew clean build --stacktrace
-          ls -al build/libs/
+      # 4. Build with Gradlew
+      - name: Build with Gradlew
+        run: ./gradlew clean bootJar
 
-      # 5. Build Frontend
-      - name: Build Frontend
-        working-directory: frontend
-        run: |
-          npm install
-          CI=false npm run build
-          ls -al build/
-
-      - name: Ensure Static Directory Exists
-        run: mkdir -p src/main/resources/static
-
-      - name: Debug Directories
-        run: |
-          ls -al src/main/resources/
-          ls -al frontend/build/
-
-      - name: Copy Frontend to Backend Static Resources
-        run: cp -r frontend/build/. src/main/resources/static/
-
-      # 6. Build Docker Image
+      # 5. Build Docker Image
       - name: Build Docker Image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation:latest .
 
-      # 7. Docker Login Verification
-      - name: Ensure Docker Login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      # 6. Docker Hub Login
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 8. Push Docker Image to Docker Hub
+      # 7. Push Docker Image to Docker Hub
       - name: Push Docker Image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/reservation:latest
 
   deploy:
     needs: build
-    name: Deploy
     runs-on: ubuntu-latest
     steps:
-      # 1. Docker Login
-      - name: Docker Login
-        uses: docker/login-action@v2
+      # 1. Docker Hub Login
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -85,51 +63,19 @@ jobs:
           docker ps -q --filter "name=reservation" | xargs -r docker stop
           docker ps -aq --filter "name=reservation" | xargs -r docker rm
 
-      # 3. Remove Old Docker Images
-      - name: Remove Old Docker Images
-        run: |
-          docker images -q --filter "dangling=true" | xargs -r docker rmi
-          docker images -q sjnnj/reservation:latest | xargs -r docker rmi
+      # 3. Pull Docker Image
+      - name: Pull Docker Image
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/reservation:latest
 
-      # 4. Pull Docker Image with Retry and Logs
-      - name: Pull Docker Image with Retry
+      # 4. Run Docker Container
+      - name: Run Docker Container
         run: |
-          for i in {1..3}; do
-            echo "Attempting to pull Docker image (try $i)..."
-            docker pull sjnnj/reservation:latest && break || echo "Pull failed. Retrying in 10 seconds..." && sleep 10;
-          done
-          echo "Final Docker Image List:"
-          docker images
+          docker run -d -p 8080:8080 --name reservation \
+            -e RDS_URL=${{ secrets.RDS_URL }} \
+            -e RDS_USERNAME=${{ secrets.RDS_USERNAME }} \
+            -e RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} \
+            ${{ secrets.DOCKER_USERNAME }}/reservation:latest
 
-      # 5. Ensure Docker Image Exists Locally
-      - name: Ensure Docker Image Exists
-        run: |
-          echo "Checking if Docker image sjnnj/reservation:latest exists locally..."
-          if ! docker images sjnnj/reservation:latest | grep sjnnj/reservation; then
-            echo "Error: Docker image sjnnj/reservation:latest not found locally.";
-            exit 1;
-          fi
-
-      # 6. Run Docker Container with Retry
-      - name: Run New Docker Container with Retry
-        run: |
-          for i in {1..3}; do
-            echo "Attempting to run Docker container (try $i)..."
-            docker run -d -p 8080:8080 --name reservation \
-              -e RDS_URL=${{ secrets.RDS_URL }} \
-              -e RDS_USERNAME=${{ secrets.RDS_USERNAME }} \
-              -e RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} \
-              sjnnj/reservation:latest && break || echo "Run failed. Retrying in 10 seconds..." && sleep 10;
-          done
-          echo "Container run command completed."
-
-      # 7. Verify Container is Running
-      - name: Verify Container is Running
-        run: |
-          echo "Verifying that the container is running..."
-          if docker ps --filter "name=reservation" --format '{{.Names}}' | grep -w "reservation"; then
-            echo "Container is running."
-          else
-            echo "Error: Container is not running.";
-            exit 1;
-          fi
+      # 5. Delete Old Docker Images
+      - name: Delete Old Docker Images
+        run: docker system prune -f
