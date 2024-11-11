@@ -62,8 +62,17 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
 
-      - name: Stop Existing Containers
-        run: docker-compose -f docker-compose.ec2.yml down
+      - name: Stop and Remove Existing Containers
+        run: |
+          docker ps -q | xargs -r docker stop
+          docker ps -aq | xargs -r docker rm
+
+      - name: Remove Existing Docker Images
+        run: |
+          docker images -q | xargs -r docker rmi -f
+
+      - name: Clean Up Docker Networks
+        run: docker network prune -f
 
       - name: Create .env file
         run: |
@@ -80,3 +89,4 @@ jobs:
 
       - name: Clean Up Unused Docker Resources
         run: docker system prune -f
+  
