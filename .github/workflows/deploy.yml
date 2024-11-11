@@ -61,18 +61,13 @@ jobs:
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest
 
       - name: Stop and Remove Existing Containers
         run: |
-          docker ps -q | xargs -r docker stop
-          docker ps -aq | xargs -r docker rm
-
-      - name: Remove Existing Docker Images
-        run: |
-          docker images -q | xargs -r docker rmi -f
-
-      - name: Clean Up Docker Networks
-        run: docker network prune -f
+          docker-compose -f docker-compose.ec2.yml down --remove-orphans
+          docker container prune -f
+          docker image prune -f
 
       - name: Create .env file
         run: |
@@ -85,8 +80,8 @@ jobs:
           echo "SPRING_PROFILES_ACTIVE=prod" >> .env
 
       - name: Start New Containers
-        run: docker-compose -f docker-compose.ec2.yml --env-file .env up -d
+        run: docker-compose -f docker-compose.ec2.yml --env-file .env up -d --build
 
       - name: Clean Up Unused Docker Resources
-        run: docker system prune -f
+        run: docker system prune -af
   
