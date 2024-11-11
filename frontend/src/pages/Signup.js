@@ -7,35 +7,30 @@ function Signup() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');  // 오류 메시지 상태 추가
-
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 비밀번호 길이 검증 (예: 최소 8자 이상)
         if (password.length < 8) {
             setErrorMessage('비밀번호는 최소 8자 이상이어야 합니다.');
             return;
         }
 
         try {
-            // /register API에 POST 요청
             const response = await axios.post('http://localhost:8080/api/v1/user/register', {
                 username,
+                email,
                 password,
-                email
             });
 
-            // 회원가입 성공 시 대시보드로 이동
             if (response.status === 200) {
-                localStorage.setItem('token', response.data.token);
-                navigate('/dashboard');
+                navigate('/login'); // 회원가입 성공 시 로그인 페이지로 이동
             }
         } catch (error) {
-            console.error('register failed:', error);
-            setErrorMessage('회원가입 실패: ' + error.response?.data?.message || '서버 오류');
+            console.error('회원가입 실패:', error);
+            setErrorMessage('회원가입 실패: ' + (error.response?.data?.message || '서버 오류'));
         }
     };
 
@@ -78,9 +73,7 @@ function Signup() {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100">
-                        회원가입
-                    </button>
+                    <button type="submit" className="btn btn-primary w-100">회원가입</button>
                 </form>
             </div>
         </div>

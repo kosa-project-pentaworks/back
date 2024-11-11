@@ -17,7 +17,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(navigate);  // navigate를 logout 함수에 전달
+    logout(navigate); // navigate를 logout 함수에 전달
   };
 
   return (
@@ -38,7 +38,9 @@ function Navbar() {
                     </>
                 ) : (
                     <li className="nav-item">
-                      <button className="btn btn-danger" onClick={handleLogout}>로그아웃</button>
+                      <button className="btn btn-danger" onClick={handleLogout}>
+                        로그아웃
+                      </button>
                     </li>
                 )
               }

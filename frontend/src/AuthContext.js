@@ -1,5 +1,5 @@
-// src/AuthContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -9,20 +9,21 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            setIsLoggedIn(true);
+            setIsLoggedIn(true); // 자동 로그인 처리
         }
     }, []);
 
     const login = (token) => {
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', token); // 토큰 저장
         setIsLoggedIn(true);
     };
 
-    // logout 함수에 navigate 파라미터 추가
     const logout = (navigate) => {
-        localStorage.removeItem('token');
+        localStorage.removeItem("token"); // 토큰 제거
         setIsLoggedIn(false);
-        navigate('/login');  // 로그아웃 후 로그인 페이지로 이동
+        if (navigate) {
+            navigate("/login"); // 로그인 페이지로 이동
+        }
     };
 
     return (
