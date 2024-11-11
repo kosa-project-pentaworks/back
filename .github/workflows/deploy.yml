@@ -57,7 +57,7 @@ jobs:
 
       # 6. Build Docker Image
       - name: Build Docker Image
-        run: docker build -t sjnnj/reservation:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation:latest .
 
       # 7. Docker Login Verification
       - name: Ensure Docker Login
@@ -65,7 +65,7 @@ jobs:
 
       # 8. Push Docker Image to Docker Hub
       - name: Push Docker Image to Docker Hub
-        run: docker push sjnnj/reservation:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/reservation:latest
 
   deploy:
     needs: build
@@ -89,7 +89,7 @@ jobs:
       - name: Remove Old Docker Images
         run: |
           docker images -q --filter "dangling=true" | xargs -r docker rmi
-          docker images -q sjnnj/reservation:latest | xargs -r docker rmi
+          docker images -q ${{ secrets.DOCKER_USERNAME }}/reservation:latest | xargs -r docker rmi
 
       # 4. Pull Docker Image with Retry and Logs
       - name: Pull Docker Image with Retry
@@ -112,9 +112,15 @@ jobs:
               -e RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} \
               sjnnj/reservation:latest && break || echo "Run failed. Retrying in 10 seconds..." && sleep 10;
           done
+          echo "Container run command completed."
 
       # 6. Verify Container is Running
       - name: Verify Container is Running
         run: |
           echo "Verifying that the container is running..."
-          docker ps --filter "name=reservation"
+          if docker ps --filter "name=reservation" --format '{{.Names}}' | grep -w "reservation"; then
+            echo "Container is running."
+          else
+            echo "Error: Container is not running.";
+            exit 1;
+          fi
