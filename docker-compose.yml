@@ -38,12 +38,12 @@ services:
     restart: always
 
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: sjnnj/reservation-nginx:latest
     container_name: reservation-nginx
+    networks:
+      - reservation_network
     ports:
-      - "80:80"
+      - "8081:80"
     depends_on:
       - backend
       - frontend

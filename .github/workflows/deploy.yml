@@ -53,20 +53,29 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest ./frontend
           docker push ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
 
+      - name: Build and Push Nginx Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest ./nginx
+          docker push ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest
+
   deploy:
     runs-on: self-hosted
     needs: build
     steps:
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Pull Latest Docker Images
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest
 
       - name: Stop and Remove Existing Containers
-        run: |
-          docker-compose -f docker-compose.ec2.yml down --remove-orphans
-          docker container prune -f
-          docker image prune -f
+        run: docker-compose -f docker-compose.ec2.yml down --rmi all -v --remove-orphans
 
       - name: Create .env file
         run: |
@@ -79,8 +88,7 @@ jobs:
           echo "SPRING_PROFILES_ACTIVE=prod" >> .env
 
       - name: Start New Containers
-        run: docker-compose -f docker-compose.ec2.yml --env-file .env up -d --build
+        run: docker-compose -f docker-compose.ec2.yml --env-file .env up -d
 
       - name: Clean Up Unused Docker Resources
-        run: docker system prune -af
-  
+        run: docker system prune -f
