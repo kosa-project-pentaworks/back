@@ -23,26 +23,35 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Grant execute permission for gradlew
+      # 3. Cache Gradle Dependencies
+      - name: Cache Gradle Packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 4. Grant execute permission for gradlew
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # 4. Build with Gradlew
+      # 5. Build with Gradlew
       - name: Build with Gradlew
         run: ./gradlew clean bootJar --no-daemon
 
-      # 5. Build Docker Image
+      # 6. Build Docker Image
       - name: Build Docker Image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation:latest .
 
-      # 6. Docker Hub Login
+      # 7. Docker Hub Login
       - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 7. Push Docker Image to Docker Hub
+      # 8. Push Docker Image to Docker Hub
       - name: Push Docker Image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/reservation:latest
 
@@ -72,8 +81,8 @@ jobs:
         run: |
           docker run -d -p 8080:8080 --name reservation \
             -e RDS_URL=${{ secrets.RDS_URL }} \
-            -e DB_USERNAME=${{ secrets.RDS_USERNAME }} \
-            -e DB_PASSWORD=${{ secrets.RDS_PASSWORD }} \
+            -e RDS_USERNAME=${{ secrets.RDS_USERNAME }} \
+            -e RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} \
             --restart always \
             ${{ secrets.DOCKER_USERNAME }}/reservation:latest
 
