@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: action-runner
     steps:
       # 1. GitHub Repository Checkout
       - name: Checkout Source Code
@@ -29,7 +29,7 @@ jobs:
 
       # 4. Build with Gradlew
       - name: Build with Gradlew
-        run: ./gradlew clean bootJar
+        run: ./gradlew clean bootJar --no-daemon
 
       # 5. Build Docker Image
       - name: Build Docker Image
@@ -48,7 +48,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: self-hosted
+    runs-on: action-runner
     steps:
       # 1. Docker Hub Login
       - name: Docker Hub Login
@@ -72,8 +72,9 @@ jobs:
         run: |
           docker run -d -p 8080:8080 --name reservation \
             -e RDS_URL=${{ secrets.RDS_URL }} \
-            -e RDS_USERNAME=${{ secrets.RDS_USERNAME }} \
-            -e RDS_PASSWORD=${{ secrets.RDS_PASSWORD }} \
+            -e DB_USERNAME=${{ secrets.RDS_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.RDS_PASSWORD }} \
+            --restart always \
             ${{ secrets.DOCKER_USERNAME }}/reservation:latest
 
       # 5. Delete Old Docker Images

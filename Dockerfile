@@ -1,12 +1,11 @@
-# Step 1: Build Stage
 FROM openjdk:17-jdk-slim AS build
 WORKDIR /app
 COPY . .
-RUN ./gradlew clean bootJar
+RUN ./gradlew bootJar --no-daemon
 
-# Step 2: Runtime Stage
+# Runtime Stage
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build build/libs/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
