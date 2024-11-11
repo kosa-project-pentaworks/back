@@ -1,48 +1,66 @@
-name: CI/CD for Spring Boot and React
+name: on-container-cicd
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-      - name: Check Disk Usage
-        run: df -h
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Clean up Docker space
-        run: |
-          docker system prune -af --volumes
-          docker builder prune -af
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          java-version: 17
+          distribution: 'temurin'
 
-      - name: Build and Push Docker Image
+      - name: Build Spring Boot JAR
+        run: ./gradlew clean bootJar
+
+      - name: Build and Push Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-app:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/reservation-app:latest
+          docker build -t sjnnj/reservation-backend:latest .
+          docker push sjnnj/reservation-backend:latest
+
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t sjnnj/reservation-frontend:latest ./frontend
+          docker push sjnnj/reservation-frontend:latest
 
   deploy:
     runs-on: self-hosted
     needs: build
     steps:
-      - name: Deploy using Docker Compose
+      - name: Pull Latest Docker Images
         run: |
-          docker compose down || true
-          docker compose up -d
-        env:
-          RDS_URL: ${{ secrets.RDS_URL }}
-          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
-          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          docker pull sjnnj/reservation-backend:latest
+          docker pull sjnnj/reservation-frontend:latest
+
+      - name: Stop Existing Containers
+        run: docker-compose -f docker-compose.ec2.yml down
+
+      - name: Create .env file
+        run: |
+          echo "RDS_USERNAME=${{ secrets.RDS_USERNAME }}" > .env
+          echo "RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> .env
+          echo "RDS_ENDPOINT=${{ secrets.RDS_ENDPOINT }}" >> .env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+          echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
+          echo "SPRING_PROFILES_ACTIVE=prod" >> .env
+
+      - name: Start New Containers
+        run: docker-compose -f docker-compose.ec2.yml --env-file .env up -d
+
+      - name: Clean Up Unused Docker Resources
+        run: docker system prune -f

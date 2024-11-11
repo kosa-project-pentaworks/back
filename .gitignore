@@ -8,12 +8,8 @@
 # Querydsl
 /src/main/generated
 
-# docker
-docker-compose.yml
-
-# Ignore environment files
-.env
-.dockerignore
+# docker-compose.yml
+./docker-compose.yml
 
 # mysql volume
 /db/mysql/data/
