@@ -6,34 +6,12 @@ on:
       - main
 
 jobs:
-  # 1. Build Job
+  # 1. Build Docker Image Job
   build:
     runs-on: self-hosted
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Check and Build React
-        run: |
-          if [ ! -d "frontend/build" ]; then
-            echo "React build directory not found. Building React application..."
-            cd frontend
-            npm install
-            npm run build
-            cd ..
-          else
-            echo "React build directory already exists. Skipping React build..."
-          fi
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Build Spring Boot JAR
-        run: |
-          ./gradlew clean build -x test
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -46,10 +24,10 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-app:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/reservation-app:latest
 
-  # 2. Deploy Job
+  # 2. Deploy Docker Image Job
   deploy:
     runs-on: self-hosted
-    needs: build
+    needs: build # build Job이 성공해야 실행
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
