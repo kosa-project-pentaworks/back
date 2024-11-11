@@ -14,7 +14,15 @@
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.4"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.4",
+    "@babel/plugin-transform-private-methods": "^7.21.0",
+    "@babel/plugin-transform-optional-chaining": "^7.21.0",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.21.0",
+    "eslint": "^8.57.1",
+    "rimraf": "^4.0.0",
+    "rollup-plugin-terser": "@rollup/plugin-terser",
+    "workbox-google-analytics": "latest",
+    "workbox-cacheable-response": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
