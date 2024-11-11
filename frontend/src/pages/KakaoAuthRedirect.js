@@ -16,7 +16,7 @@ function KakaoAuthRedirect() {
             isFetching.current = true;
 
             try {
-                const response = await axios.post('http://localhost:8080/api/v1/auth/callback', {code});
+                const response = await axios.post('http://43.201.102.48:80/api/v1/auth/callback', {code});
 
                 if (response.data.success) {
                     login(response.data.token); // 토큰 저장

@@ -24,7 +24,7 @@ function Login() {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/auth/login', {
+            const response = await axios.post('http://43.201.102.48:8080/api/v1/auth/login', {
                 email: username,
                 password,
             });
@@ -42,8 +42,8 @@ function Login() {
     };
 
     const handleKakaoLogin = () => {
-        const redirectUri = encodeURIComponent('http://localhost:3000/oauth/kakao/callback');
-        window.location.href = `http://localhost:8080/oauth2/authorization/kakao?redirect_uri=${redirectUri}`;
+        const redirectUri = encodeURIComponent('http://43.201.102.48:80/oauth/kakao/callback');
+        window.location.href = `http://43.201.102.48:8080/oauth2/authorization/kakao?redirect_uri=${redirectUri}`;
     };
 
     return (
