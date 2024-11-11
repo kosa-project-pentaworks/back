@@ -63,7 +63,7 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
 
       - name: Stop Existing Containers
-        run: docker-compose -f docker-compose.ec2.yml down
+        run: docker-compose -f docker-compose.yml down
 
       - name: Create .env file
         run: |
@@ -76,7 +76,7 @@ jobs:
           echo "SPRING_PROFILES_ACTIVE=prod" >> .env
 
       - name: Start New Containers
-        run: docker-compose -f docker-compose.ec2.yml --env-file .env up -d
+        run: docker-compose -f docker-compose.yml --env-file .env up -d
 
       - name: Clean Up Unused Docker Resources
         run: docker system prune -f
