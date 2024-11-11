@@ -68,7 +68,7 @@ jobs:
           echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
 
       - name: docker app service container start
-        run: docker-compose --env-file .env up -d app
+        run: docker-compose --env-file .env up -d
 
       - name: Clean Up Unused Docker Resources
         run: docker system prune -f
