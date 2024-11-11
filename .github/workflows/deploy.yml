@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -37,15 +37,21 @@ jobs:
       - name: Build Spring Boot JAR
         run: ./gradlew clean bootJar
 
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build and Push Backend Image
         run: |
-          docker build -t sjnnj/reservation-backend:latest .
-          docker push sjnnj/reservation-backend:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
 
       - name: Build and Push Frontend Image
         run: |
-          docker build -t sjnnj/reservation-frontend:latest ./frontend
-          docker push sjnnj/reservation-frontend:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
 
   deploy:
     runs-on: self-hosted
@@ -53,8 +59,8 @@ jobs:
     steps:
       - name: Pull Latest Docker Images
         run: |
-          docker pull sjnnj/reservation-backend:latest
-          docker pull sjnnj/reservation-frontend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
 
       - name: Stop Existing Containers
         run: docker-compose -f docker-compose.ec2.yml down
