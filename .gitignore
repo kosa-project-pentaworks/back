@@ -13,6 +13,7 @@ docker-compose.yml
 
 # Ignore environment files
 .env
+.dockerignore
 
 # mysql volume
 /db/mysql/data/
