@@ -15,16 +15,6 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Set up Gradle Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -62,13 +52,6 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
-      - name: Stop and Remove Existing Containers
-        run: |
-          docker-compose -f docker-compose.ec2.yml down --rmi all -v --remove-orphans
-          docker container prune -f
-          docker image prune -f
-          docker network prune -f
-
       - name: Pull Latest Docker Images
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
@@ -85,8 +68,8 @@ jobs:
           echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
           echo "SPRING_PROFILES_ACTIVE=prod" >> .env
 
-      - name: Start New Containers
-        run: docker-compose -f docker-compose.ec2.yml --env-file .env up -d
+      - name: docker app service container start
+        run: docker-compose —env-file .env up -d app
 
       - name: Clean Up Unused Docker Resources
         run: docker system prune -f
