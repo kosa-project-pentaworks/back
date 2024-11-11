@@ -45,18 +45,18 @@ jobs:
 
       - name: Build and Push Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
+          docker build -t sjnnj/reservation-backend:latest .
+          docker push sjnnj/reservation-backend:latest
 
       - name: Build and Push Frontend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest ./frontend
-          docker push ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
+          docker build -t sjnnj/reservation-frontend:latest ./frontend
+          docker push sjnnj/reservation-frontend:latest
 
       - name: Build and Push Nginx Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest ./nginx
-          docker push ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest
+          docker build -t sjnnj/reservation-nginx:latest ./nginx
+          docker push sjnnj/reservation-nginx:latest
 
   deploy:
     runs-on: self-hosted
@@ -64,9 +64,9 @@ jobs:
     steps:
       - name: Pull Latest Docker Images
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
-          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
-          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest
+          docker pull sjnnj/reservation-backend:latest
+          docker pull sjnnj/reservation-frontend:latest
+          docker pull sjnnj/reservation-nginx:latest
 
       - name: Stop and Remove Existing Containers
         run: |
