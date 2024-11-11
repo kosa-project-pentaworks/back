@@ -61,7 +61,6 @@ jobs:
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-backend:latest
           docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-frontend:latest
-          docker pull ${{ secrets.DOCKER_USERNAME }}/reservation-nginx:latest
 
       - name: Stop and Remove Existing Containers
         run: |
