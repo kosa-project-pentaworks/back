@@ -1,7 +1,8 @@
-package com.reservation.hospitals.batch.schedule;//package com.reservation.hospitals.batch.schedule;
+//package com.reservation.hospitals.batch.schedule;
 //
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.batch.core.Job;
+//
 //import org.springframework.batch.core.JobParametersBuilder;
 //import org.springframework.batch.core.JobParametersInvalidException;
 //import org.springframework.batch.core.configuration.JobRegistry;
