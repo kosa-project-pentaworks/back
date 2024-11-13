@@ -76,8 +76,9 @@ jobs:
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
 
       - name: docker app service container start
-        run: docker-compose --env-file .env up -d
+        run: |
+          cd /home/ubuntu/actions-runner/_work/back/back
+          docker-compose --env-file .env up -d
 
       - name: Clean Up Unused Docker Resources
         run: docker system prune -f
-        
