@@ -16,7 +16,8 @@ function KakaoAuthRedirect() {
             isFetching.current = true;
 
             try {
-                const response = await axios.post('http://localhost:8080/api/v1/auth/callback', {code});
+                // 기존에 중복되었던 /api 경로를 제거
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/callback`, {code});
 
                 if (response.data.success) {
                     login(response.data.token); // 토큰 저장

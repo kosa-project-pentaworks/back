@@ -24,7 +24,8 @@ function Login() {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/auth/login', {
+            // 기존에 중복되었던 /api 경로를 제거
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/login`, {
                 email: username,
                 password,
             });
@@ -42,8 +43,9 @@ function Login() {
     };
 
     const handleKakaoLogin = () => {
-        const redirectUri = encodeURIComponent('http://localhost/oauth/kakao/callback');
-        window.location.href = `http://localhost:8080/oauth2/authorization/kakao?redirect_uri=${redirectUri}`;
+        // 기존에 중복되었던 /api 경로를 제거
+        const redirectUri = encodeURIComponent(`${process.env.REACT_APP_API_URL}/oauth/kakao/callback`);
+        window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/kakao?redirect_uri=${redirectUri}`;
     };
 
     return (
