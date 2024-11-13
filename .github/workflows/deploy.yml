@@ -66,9 +66,9 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "DB_URL=${{ secrets.RDS_ENDPOINT }}" >> .env
           echo "DB_USERNAME=${{ secrets.RDS_USERNAME }}" > .env
           echo "DB_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> .env
+          echo "DB_URL=${{ secrets.RDS_ENDPOINT }}" >> .env
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
           echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
           echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
@@ -79,4 +79,3 @@ jobs:
 
       - name: Clean Up Unused Docker Resources
         run: docker system prune -f
-        
