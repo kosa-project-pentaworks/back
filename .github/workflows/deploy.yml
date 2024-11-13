@@ -75,8 +75,10 @@ jobs:
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
 
       - name: Copy Nginx Configuration File
+        working-directory: ${{ github.workspace }}
         run: |
-          cp ./nginx/nginx.conf /home/ubuntu/nginx/nginx.conf
+          mkdir -p /home/ubuntu/nginx
+          cp nginx/nginx.conf /home/ubuntu/nginx/nginx.conf
 
       - name: docker app service container start
         run: docker-compose --env-file .env up -d
