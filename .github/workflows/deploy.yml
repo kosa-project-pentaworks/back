@@ -77,7 +77,7 @@ jobs:
       - name: Copy Nginx Configuration File
         run: |
           mkdir -p /home/ubuntu/nginx
-          cp nginx/nginx.conf /home/ubuntu/nginx/nginx.conf
+          cp ./nginx/nginx.conf /home/ubuntu/nginx/nginx.conf
 
       - name: docker app service container start
         run: docker-compose --env-file .env up -d
