@@ -17,6 +17,8 @@ FROM nginx:alpine
 # 빌드된 파일을 Nginx의 기본 제공 html 디렉토리로 복사
 COPY --from=build /app/build /usr/share/nginx/html
 
+COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
+
 # Nginx 포트 설정
 EXPOSE 80
 
