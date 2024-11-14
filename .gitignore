@@ -11,10 +11,6 @@
 # mysql volume
 /db/mysql/data/
 
-# react .env
-/frontend/.env.development
-/frontend/.env.production
-
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
