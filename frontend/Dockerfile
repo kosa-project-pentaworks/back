@@ -4,7 +4,7 @@ FROM node:20 as build
 WORKDIR /app
 
 # Copy environment variable files
-COPY .env.production .env
+COPY ./.env.production .env
 
 # Copy package.json and package-lock.json (for npm ci)
 COPY package.json package-lock.json ./
