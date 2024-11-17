@@ -43,7 +43,7 @@ function Login() {
 
     const handleKakaoLogin = () => {
         // 기존에 중복되었던 /api 경로를 제거
-        window.location.href = `http://52.79.220.59/oauth2/authorization/kakao`;
+        window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/kakao`;
     };
 
     return (
