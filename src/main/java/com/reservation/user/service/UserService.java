@@ -38,6 +38,7 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase {
                         .email(request.email())
                         .build()
         );
+
         return new UserRegistrationResponse(dto.getUsername(), dto.getEmail());
     }
 
