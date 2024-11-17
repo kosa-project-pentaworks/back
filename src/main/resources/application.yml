@@ -47,14 +47,6 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-  cors:
-    allowed-origins:
-      - "http://localhost:3000"
-      - "http://52.79.220.59"
-    allowed-methods: GET, POST, PUT, DELETE, OPTIONS
-    allowed-headers: "*"
-    allow-credentials: true
-
 jwt:
   secret: ${JWT_SECRET_KEY}
   expire:
