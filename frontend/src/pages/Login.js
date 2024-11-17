@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import {useAuth} from '../AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Login() {
+function Login({setIsLoggedIn}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const {login} = useAuth();
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -24,13 +23,21 @@ function Login() {
         }
 
         try {
+            // login API 에 POST 요청
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/login`, {
                 email: username,
                 password,
             });
 
+            console.log(response);
+
             if (response.data.success) {
-                login(response.data.token); // 로그인 성공 시 토큰 저장
+                // 응답이 성공하면 로그인 처리 (토큰 저장 등)
+                // 예: localStorage 에 토큰 저장
+                localStorage.setItem('token', response.data.data);
+                // 이후 페이지 이동 또는 로그인 처리 로직 추가
+                setIsLoggedIn(true)
+                // 예: 대시보드로 이동
                 navigate('/dashboard');
             } else {
                 setErrorMessage('로그인 실패: 사용자 정보가 일치하지 않습니다.');
@@ -42,7 +49,6 @@ function Login() {
     };
 
     const handleKakaoLogin = () => {
-        // 기존에 중복되었던 /api 경로를 제거
         window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/kakao`;
     };
 

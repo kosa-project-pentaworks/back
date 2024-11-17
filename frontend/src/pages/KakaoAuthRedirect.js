@@ -1,48 +1,34 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import {useAuth} from '../AuthContext';
 
 function KakaoAuthRedirect() {
     const navigate = useNavigate();
-    const {login} = useAuth();
-    const isFetching = useRef(false);
 
     useEffect(() => {
-        const code = new URL(window.location.href).searchParams.get('code');
+        // 현재 URL 에서 카카오 인증 후 리턴된 authorization code 추출
+        const code = new URL(window.location.href).searchParams.get("code");
 
-        const fetchToken = async () => {
-            if (isFetching.current) return;
-            isFetching.current = true;
+        console.log(code);
 
-            try {
-                // 기존에 중복되었던 /api 경로를 제거
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/callback`, {code});
-
-                if (response.data.success) {
-                    login(response.data.token); // 토큰 저장
-                    navigate('/dashboard');
-                } else {
-                    throw new Error('카카오 인증 실패');
-                }
-            } catch (error) {
-                console.error('카카오 로그인 실패:', error);
-                alert('카카오 로그인에 실패했습니다.');
-                navigate('/login');
-            } finally {
-                isFetching.current = false;
-            }
-        };
-
+        // 백엔드에 인증 코드 전송하여 JWT 토큰 받기
         if (code) {
-            fetchToken();
-        } else {
-            alert('카카오 로그인에 실패했습니다.');
-            navigate('/login');
+            axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/callback`, {code})
+                .then(response => {
+                    console.log(response)
+                    const token = response.data.data;  // 백엔드에서 받은 JWT 토큰
+                    localStorage.setItem('token', token);  // 토큰을 localStorage 에 저장
+                    navigate('/dashboard');  // 로그인 후 대시보드로 리디렉션
+                })
+                .catch(error => {
+                    console.error('카카오 로그인 실패:', error);
+                });
         }
-    }, [navigate, login]);
+    }, [navigate]);
 
-    return <div>카카오 로그인 처리 중...</div>;
+    return (
+        <div>카카오 로그인 처리 중...</div>
+    );
 }
 
 export default KakaoAuthRedirect;

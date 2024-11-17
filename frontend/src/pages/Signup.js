@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
     const [username, setUsername] = useState('');
@@ -19,25 +19,26 @@ function Signup() {
         }
 
         try {
-            // 기존에 중복되었던 /api 경로를 제거
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/v1/user/register`, {
                 username,
                 email,
                 password,
             });
 
-            if (response.status === 200) {
+            if (response.data.success) {
                 navigate('/login'); // 회원가입 성공 시 로그인 페이지로 이동
+            } else {
+                setErrorMessage(response.data.message || '회원가입 실패');
             }
         } catch (error) {
             console.error('회원가입 실패:', error);
-            setErrorMessage('회원가입 실패: ' + (error.response?.data?.message || '서버 오류'));
+            setErrorMessage(error.response?.data?.message || '회원가입 실패');
         }
     };
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
-            <div className="card shadow-sm p-4" style={{width: '100%', maxWidth: '400px'}}>
+            <div className="card shadow-sm p-4" style={{ width: '100%', maxWidth: '400px' }}>
                 <h3 className="text-center mb-4">회원가입</h3>
                 <form onSubmit={handleSubmit}>
                     {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
