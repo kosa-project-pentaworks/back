@@ -72,7 +72,7 @@ function App() {
                         <Route path="/" element={<Main/>}/>
                         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
                         <Route path="/signup" element={<Signup/>}/>
-                        <Route path="/login/oauth2/code/kakao" element={<KakaoAuthRedirect/>}/>
+                        <Route path="/login/oauth2/code/kakao" element={<KakaoAuthRedirect setIsLoggedIn={setIsLoggedIn} />}/>
 
                         <Route path="/dashboard" element={
                             <ProtectedRoute>
