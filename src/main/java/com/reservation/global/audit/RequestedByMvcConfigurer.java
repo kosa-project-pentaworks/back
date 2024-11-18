@@ -1,6 +1,7 @@
 package com.reservation.global.audit;
 
 import com.reservation.global.interceptor.RequestedByInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -8,16 +9,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
+@RequiredArgsConstructor
 public class RequestedByMvcConfigurer implements WebMvcConfigurer {
 
-    private final RequestedByInterceptor requestedByInterceptor;
-
-    public RequestedByMvcConfigurer(RequestedByInterceptor requestedByInterceptor) {
-        this.requestedByInterceptor = requestedByInterceptor;
-    }
+    private final RequestedByInterceptor interceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addWebRequestInterceptor(requestedByInterceptor);
+        registry.addWebRequestInterceptor(interceptor);
     }
 }

@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @CreatedDate
-    @Column(name = "created_at", updatable = false) private LocalDateTime createdAt;
+    @CreatedDate @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    @CreatedBy
-    @Column(name = "created_by", updatable = false) private String createdBy;
+    @CreatedBy @Column(name = "created_by", updatable = false)
+    private String createdBy;
 }
