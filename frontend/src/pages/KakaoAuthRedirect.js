@@ -24,7 +24,8 @@ function KakaoAuthRedirect({setIsLoggedIn}) {
                 }
 
                 // JWT 토큰 저장
-                localStorage.setItem('token', token);
+                const accessToken = typeof token === 'object' ? token.accessToken : token;
+                localStorage.setItem('token', accessToken);
 
                 // 페이지 리디렉션
                 navigate('/dashboard');
