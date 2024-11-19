@@ -67,6 +67,8 @@ jobs:
           echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
           echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
           echo "KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" >> .env
+          echo "IMPORT_KEY=${{ secrets.IMPORT_KEY }}" >> .env
+          echo "IMPORT_SECRETKEY=${{ secrets.IMPORT_SECRETKEY }}" >> .env
 
       - name: docker app service container start
         run: docker-compose --env-file .env up -d
