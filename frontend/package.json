@@ -23,8 +23,7 @@
     "rollup-plugin-terser": "@rollup/plugin-terser",
     "web-vitals": "^2.1.4",
     "workbox-cacheable-response": "latest",
-    "workbox-google-analytics": "latest",
-    "react-datepicker": "^7.5.0"
+    "workbox-google-analytics": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
