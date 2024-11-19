@@ -55,3 +55,7 @@ jwt:
 import:
   restkey: ${IMPORT_KEY}
   secretkey: ${IMPORT_SECRETKEY}
+
+redis:
+  localurl: localhost
+  url: 52.79.220.59
