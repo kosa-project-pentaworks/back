@@ -5,18 +5,26 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.4",
-    "@portone/browser-sdk": "^0.0.10",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.21.0",
+    "@babel/plugin-transform-optional-chaining": "^7.21.0",
+    "@babel/plugin-transform-private-methods": "^7.21.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.57.1",
     "react": "^18.3.1",
-    "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-scripts": "^5.0.1",
+    "rimraf": "^4.0.0",
+    "rollup-plugin-terser": "@rollup/plugin-terser",
+    "web-vitals": "^2.1.4",
+    "workbox-cacheable-response": "latest",
+    "workbox-google-analytics": "latest",
+    "react-datepicker": "^7.5.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@jridgewell/sourcemap-codec": "^1.5.0"
   }
 }
