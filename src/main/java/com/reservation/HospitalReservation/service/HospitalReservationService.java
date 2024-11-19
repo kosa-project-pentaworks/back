@@ -77,7 +77,7 @@ public class HospitalReservationService {
     @Transactional(readOnly = true)
     public HospitalReservationPageResponse findAllHospitalReservationByUserId(Long userId, String type, int page, int size){
         Pageable pageable = PageRequest.of(page - 1, size);
-        PageImpl<FindHospitalReservationDto> findHospitalRservation =  hospitalReservationRepository.findAllByUserId(1L, type,pageable);
+        PageImpl<FindHospitalReservationDto> findHospitalRservation =  hospitalReservationRepository.findAllByUserId(5L, type,pageable);
         return HospitalReservationPageResponse.response(findHospitalRservation.getNumber(), findHospitalRservation.getTotalPages(), findHospitalRservation.hasPrevious(), findHospitalRservation.hasNext(), findHospitalRservation.getContent());
 
     }

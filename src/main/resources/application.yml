@@ -52,3 +52,6 @@ jwt:
   expire:
     access-token: 1
     refresh-token: 24
+import:
+  restkey: ${IMPORT_KEY}
+  secretkey: ${IMPORT_SECRETKEY}
