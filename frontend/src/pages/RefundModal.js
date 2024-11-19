@@ -10,7 +10,7 @@ const RefundModal = ({ isOpen, onClose, hostReservation }) => {
       reservationId: hostReservation.hospReservationId,
     };
     axios
-      .post(`http://localhost:8080/api/v1/payment/refund`, reservation)
+      .post(`${process.env.REACT_APP_API_URL}/v1/payment/refund`, reservation)
       .then((response) => {
         if (response.data.data) {
           // 환불 성공

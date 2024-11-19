@@ -32,7 +32,7 @@ const ReservationUpdateModal = ({ isOpen, onClose, hostReservation }) => {
   const getReservation = async (formattedDate) => {
     await axios
       .get(
-        `http://localhost:8080/api/v1/hospitalreservation?reservationAt=${formattedDate}&hospId=${hostReservation.hospId}`
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreservation?reservationAt=${formattedDate}&hospId=${hostReservation.hospId}`
       )
       .then((response) => {
         if (response.data.success) {
@@ -81,7 +81,7 @@ const ReservationUpdateModal = ({ isOpen, onClose, hostReservation }) => {
       // 확인을 누른 경우 실행할 코드
       axios
         .post(
-          `http://localhost:8080/api/v1/hospitalreservation/update`,
+          `${process.env.REACT_APP_API_URL}/v1/hospitalreservation/update`,
           reservationUpdateRequest
         )
         .then((response) => {

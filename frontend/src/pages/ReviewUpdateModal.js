@@ -19,7 +19,7 @@ const ReviewUpdateModal = ({ isOpen, onClose, hostReservation }) => {
   const getMyReview = () => {
     axios
       .get(
-        `http://localhost:8080/api/v1/hospitalreview?hospitalReviewId=${hostReservation.hospReviewId}`
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreview?hospitalReviewId=${hostReservation.hospReviewId}`
       )
       .then((response) => {
         if (response.data.success) {
@@ -45,7 +45,7 @@ const ReviewUpdateModal = ({ isOpen, onClose, hostReservation }) => {
     };
     axios
       .post(
-        `http://localhost:8080/api/v1/hospitalreview/update`,
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreview/update`,
         hospitalReviewUpdateInput
       )
       .then((response) => {

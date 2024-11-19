@@ -45,7 +45,7 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
   const getReservation = async (formattedDate) => {
     await axios
       .get(
-        `http://localhost:8080/api/v1/hospitalreservation?reservationAt=${formattedDate}&hospId=${selectedHospital.hospId}`
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreservation?reservationAt=${formattedDate}&hospId=${selectedHospital.hospId}`
       )
       .then((response) => {
         if (response.data.success) {
@@ -90,7 +90,10 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
       reservationTime: selectedTime,
     };
     axios
-      .post(`http://localhost:8080/api/v1/hospitalreservation`, resercationData)
+      .post(
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreservation`,
+        resercationData
+      )
       .then((response) => {
         if (!response.data.data.isvalid) {
           // 중복되는 예약이 없다.
@@ -134,7 +137,7 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
           };
 
           axios
-            .post(`http://localhost:8080/api/v1/payment`, detailPayment)
+            .post(`${process.env.REACT_APP_API_URL}/v1/payment`, detailPayment)
             .then((response) => {
               console.log(response);
               navigate("/hospitalReservationHistory");
@@ -142,7 +145,7 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
         } else {
           axios
             .post(
-              `http://localhost:8080/api/v1/payment/redisremove`,
+              `${process.env.REACT_APP_API_URL}/v1/payment/redisremove`,
               redisKey,
               {
                 headers: {

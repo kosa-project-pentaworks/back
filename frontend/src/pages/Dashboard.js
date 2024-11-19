@@ -37,7 +37,7 @@ function Dashboard() {
     console.log("새로고침");
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/hospital/search?sidoCdNm=${search.sidoCdNm}&sgguCdNm=${search.sgguCdNm}&keyWord=${search.keyWord}&page=${search.page}`
+        `${process.env.REACT_APP_API_URL}/v1/hospital/search?sidoCdNm=${search.sidoCdNm}&sgguCdNm=${search.sgguCdNm}&keyWord=${search.keyWord}&page=${search.page}`
       );
       if (response.data.success) {
         setHospitalPages({ ...response.data.data });
