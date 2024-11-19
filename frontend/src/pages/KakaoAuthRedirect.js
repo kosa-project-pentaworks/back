@@ -1,41 +1,39 @@
 import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-function KakaoAuthRedirect({setIsLoggedIn, setUsername}) {
+import axios from 'axios';
+
+function KakaoAuthRedirect({fetchUserInfo}) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const code = new URL(window.location.href).searchParams.get("code");
+        const handleKakaoLogin = async () => {
+            const code = new URL(window.location.href).searchParams.get("code");
 
-        if (!code) {
-            console.error('카카오 인증 코드가 없습니다.');
-            return;
-        }
+            if (!code) {
+                console.error("카카오 인증 코드가 없습니다.");
+                return;
+            }
 
-        axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/callback`, {code})
-            .then(response => {
-                console.log(response);
-
+            try {
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/callback`, { code });
                 const token = response.data.data.accessToken;
-                localStorage.setItem('token', token);
 
-                // JWT 디코딩 후 유저네임 추출
-                try {
-                    const decodedToken = jwtDecode(token);
-                    setUsername(decodedToken.username || '사용자');
-                } catch (error) {
-                    console.error('JWT 디코딩 실패:', error);
-                }
+                // 토큰 저장
+                localStorage.setItem("token", token);
 
-                navigate('/dashboard');
-                setTimeout(() => setIsLoggedIn(true), 0);
-            })
-            .catch(error => {
-                console.error('카카오 로그인 실패:', error);
-            });
-    }, [navigate, setIsLoggedIn, setUsername]);
+                // 유저 정보 갱신
+                await fetchUserInfo(token);
+
+                navigate("/dashboard");
+            } catch (error) {
+                console.error("카카오 로그인 실패:", error);
+            }
+        };
+
+        handleKakaoLogin();
+    }, [fetchUserInfo, navigate]);
 
     return (
         <div>카카오 로그인 처리 중...</div>
