@@ -1,8 +1,10 @@
 import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
 import {useEffect, useState} from "react";
+import { jwtDecode } from 'jwt-decode';
 
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import MyPage from "./pages/MyPage";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import Main from "./pages/Main";
@@ -13,12 +15,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);  // 로그인 상태 관리
+    const [username, setUsername] = useState(''); // 로그인된 유저의 이름
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        console.log('token=', token)
         if (token) {
-            setIsLoggedIn(true);
+            try {
+                const decodedToken = jwtDecode(token);
+                setUsername(decodedToken.username || '사용자');
+                setIsLoggedIn(true);
+            } catch (error) {
+                console.error('JWT 디코딩 실패:', error);
+                setIsLoggedIn(false);
+            }
         }
     }, []);
 
@@ -29,6 +38,7 @@ function App() {
             localStorage.removeItem('token');
             // 로그인 페이지로 리디렉션
             setIsLoggedIn(false)
+            setUsername('');
         } catch (error) {
             alert('로그아웃 실패')
         }
@@ -54,11 +64,18 @@ function App() {
                                             </li>
                                         </>
                                     ) : (
-                                        <li className="nav-item">
-                                            <button className="btn btn-danger" onClick={handleLogout}>
-                                                로그아웃
-                                            </button>
-                                        </li>
+                                        <>
+                                            <li className="nav-item">
+                                                <Link className="nav-link" to="/mypage">
+                                                    {username || "마이페이지"}
+                                                </Link>
+                                            </li>
+                                            <li className="nav-item">
+                                                <button className="btn btn-danger" onClick={handleLogout}>
+                                                    로그아웃
+                                                </button>
+                                            </li>
+                                        </>
                                     )
                                 }
                             </ul>
@@ -72,11 +89,17 @@ function App() {
                         <Route path="/" element={<Main/>}/>
                         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
                         <Route path="/signup" element={<Signup/>}/>
-                        <Route path="/login/oauth2/code/kakao" element={<KakaoAuthRedirect setIsLoggedIn={setIsLoggedIn} />}/>
+                        <Route path="/login/oauth2/code/kakao"
+                               element={<KakaoAuthRedirect setIsLoggedIn={setIsLoggedIn} setUsername={setUsername}/>}/>
 
                         <Route path="/dashboard" element={
                             <ProtectedRoute>
                                 <Dashboard/>
+                            </ProtectedRoute>
+                        }/>
+                        <Route path="/mypage" element={
+                            <ProtectedRoute>
+                                <MyPage/>
                             </ProtectedRoute>
                         }/>
                     </Routes>

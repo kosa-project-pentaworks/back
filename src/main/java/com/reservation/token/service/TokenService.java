@@ -167,7 +167,7 @@ public class TokenService implements FetchTokenUseCase, CreateTokenUseCase, Upda
         Instant instant = now.toInstant();
 
         return Jwts.builder()
-                .claim("providerId", userId)
+                .claim("userId", userId)
                 .issuedAt(now)
                 .expiration(Date.from(instant.plus(expireAt)))
                 .signWith(getSigningKey())
