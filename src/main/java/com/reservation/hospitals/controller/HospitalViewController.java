@@ -27,7 +27,6 @@ public class HospitalViewController {
         ){
         HospitalsPageResponse hospitalsPages = hospitalService.searchHospital(sidoCdNm,sgguCdNm,keyWord,size,page);
         model.addAttribute("hospitalPages", hospitalsPages);
-        System.out.println("?? ==>> "  + hospitalsPages.getNext());
         for(HospitalSearchDto aa : hospitalsPages.getHospitals()){
             System.out.println(aa.getYadmNm());
         }
