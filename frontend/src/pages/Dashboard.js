@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Location from "./Location";
 import ReservationModal from "./ReservationModal";
 
 function Dashboard() {
-  const [page, setPage] = useState("0");
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달창 열때
   const [selectedHospital, setSelectedHospital] = useState(null); // 모달창 열었을때 정보
 
@@ -41,27 +40,30 @@ function Dashboard() {
         `http://localhost:8080/api/v1/hospital/search?sidoCdNm=${search.sidoCdNm}&sgguCdNm=${search.sgguCdNm}&keyWord=${search.keyWord}&page=${search.page}`
       );
       if (response.data.success) {
-        console.log(response.data.data);
         setHospitalPages({ ...response.data.data });
       }
     } catch (error) {
       console.error("API 요청 오류:", error);
     }
   };
+
   const onClickSearch = () => {
     setSearch({ ...searchInput });
   };
+
   useEffect(() => {
     getHospitals();
   }, [search]);
+
   const onChangeKeyWord = (e) => {
     setSearchInput({ ...searchInput, keyWord: e.target.value });
   };
+
   const onClickSelectPage = (page) => {
     setSearch({ ...search, page: page });
   };
 
-  const pageNums = new Array();
+  const pageNums = [];
   const pageNum = (Math.floor((hospitalPages.number - 1) / 5) + 1) * 5;
   if (hospitalPages.totalPage !== 0) {
     if (hospitalPages.totalPage > pageNum) {
@@ -77,6 +79,7 @@ function Dashboard() {
 
   const handleReservationClick = (hospital) => {
     setIsModalOpen(true);
+    setSelectedHospital(hospital);
   };
 
   return (
@@ -97,15 +100,13 @@ function Dashboard() {
             <li>{item.yadmNm}</li>
             <li>{item.addr}</li>
             <li>{item.telno}</li>
-            {item.hospAdminId ? (
-              <div>
-                <span>리뷰 {item.reviewCount}</span>
-                <span>평점 {item.ratingAvg}</span>{" "}
-                <button onClick={() => handleReservationClick(item)}>
-                  예약하기
-                </button>
-              </div>
-            ) : null}
+            <div>
+              <span>리뷰 {item.reviewCount}</span>
+              <span>평점 {item.ratingAvg}</span>{" "}
+              <button onClick={() => handleReservationClick(item)}>
+                예약하기
+              </button>
+            </div>
           </ul>
         ))}
         {hospitalPages.previous ? (
@@ -114,9 +115,19 @@ function Dashboard() {
           </button>
         ) : null}
         {pageNums.map((item) => (
-          <a href="#" onClick={() => onClickSelectPage(item)}>
+          <button
+            key={item}
+            onClick={() => onClickSelectPage(item)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "blue",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+          >
             {item}
-          </a>
+          </button>
         ))}
         {hospitalPages.next ? (
           <button onClick={() => onClickSelectPage(hospitalPages.number + 1)}>
@@ -124,7 +135,11 @@ function Dashboard() {
           </button>
         ) : null}
       </div>
-      <ReservationModal isOpen={isModalOpen}></ReservationModal>
+      <ReservationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedHospital={selectedHospital}
+      ></ReservationModal>
     </div>
   );
 }

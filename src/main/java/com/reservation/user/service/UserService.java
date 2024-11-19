@@ -63,7 +63,6 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase {
         }
 
         UserDto dto = byEmail.get();
-
         return new SimpleUserResponse(dto.getUsername(), dto.getEmail());
     }
 

@@ -3,6 +3,7 @@ package com.reservation.hospitals.batch;
 import com.reservation.hospitals.controller.HospitalDataClient;
 import com.reservation.hospitals.domain.HospitalEntity;
 import com.reservation.hospitals.repository.HospitalRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -15,18 +16,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
+@RequiredArgsConstructor
 public class HospitalDataBatch {
     private final HospitalRepository hospitalRepository;
     private final HospitalDataClient hospitalDataClient;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
 
-    public HospitalDataBatch(HospitalRepository hospitalRepository, HospitalDataClient hospitalDataClient, JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
-        this.hospitalRepository = hospitalRepository;
-        this.hospitalDataClient = hospitalDataClient;
-        this.jobRepository = jobRepository;
-        this.platformTransactionManager = platformTransactionManager;
-    }
+
 
     @Bean
     public Job hospitalDataJob(){

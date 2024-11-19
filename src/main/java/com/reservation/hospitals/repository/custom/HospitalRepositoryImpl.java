@@ -40,7 +40,6 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom{
                 keywordEq(keyword),
                 hospitalEntity.hospStatus.eq(HospStatus.OPEN)
             )
-            .orderBy(hospitalEntity.hospitalAdmin.id.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetchResults();
@@ -51,23 +50,16 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom{
                 hospitalEntity.addr,
                 hospitalEntity.yadmNm,
                 hospitalEntity.telno,
-                hospitalEntity.hospitalAdmin.id.as("hospAdminId"),
                 hospitalReviewEntity.count().as("reviewCount"),
                 hospitalReviewEntity.hospReviewRating.avg().round().as("ratingAvg")
             )).from(hospitalEntity)
-            .leftJoin(hospitalEntity.hospitalAdmin, hospitalAdmin)
             .leftJoin(hospitalEntity.hospitalReviewEntity, hospitalReviewEntity)
             .where(hospitalEntity.hospId.in(hospitalIds.getResults()))
-            .orderBy(hospitalAdmin.id.desc())
             .groupBy(hospitalEntity.hospId,
                 hospitalEntity.addr,
                 hospitalEntity.yadmNm,
-                hospitalEntity.telno,
-                hospitalEntity.hospitalAdmin.id)
+                hospitalEntity.telno)
             .fetch();
-
-
-
         return new PageImpl<>(hospitalSearchList, pageable, hospitalIds.getTotal());
     }
 

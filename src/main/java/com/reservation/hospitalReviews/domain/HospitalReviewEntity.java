@@ -1,7 +1,11 @@
 package com.reservation.hospitalReviews.domain;
 
+import com.reservation.HospitalReservation.domain.HospitalReservationEntity;
+import com.reservation.global.audit.MutableBaseEntity;
 import com.reservation.hospitalReviews.controller.requerst.HospitalReviewInputRequest;
+import com.reservation.hospitalReviews.controller.requerst.HospitalReviewUpdateInputRequest;
 import com.reservation.hospitals.domain.HospitalEntity;
+import com.reservation.user.domain.SocialUserEntity;
 import com.reservation.user.domain.UserEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -16,49 +20,54 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "hospital_review")
 @EntityListeners(AuditingEntityListener.class)
-public class HospitalReviewEntity {
+public class HospitalReviewEntity extends MutableBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hosp_review_id")
     private Long hospReviewId;
+
     @Column(name = "hosp_review_content",nullable = false)
     private String hospReviewContent;
 
     @Column(name = "hosp_review_rating", length = 2, nullable = false)
     private int hospReviewRating;
 
-    @CreatedDate
-    @Column(name = "created_at",updatable = false, columnDefinition = "datetime default now()")
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "modified_at", columnDefinition = "datetime default now()")
-    private LocalDateTime modifiedAt;
-
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private SocialUserEntity userEntity;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "hosp_id")
     private HospitalEntity hospitalEntity;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_reservation_id")
+    private HospitalReservationEntity hospitalReservation;
 
-    public HospitalReviewEntity(Long hospReviewId, String hospReviewContent, int hospReviewRating, LocalDateTime createdAt, LocalDateTime modifiedAt, UserEntity userEntity, HospitalEntity hospitalEntity) {
+    @Builder
+    public HospitalReviewEntity(Long hospReviewId, String hospReviewContent, int hospReviewRating, SocialUserEntity userEntity, HospitalEntity hospitalEntity, HospitalReservationEntity hospitalReservation) {
         this.hospReviewId = hospReviewId;
         this.hospReviewContent = hospReviewContent;
         this.hospReviewRating = hospReviewRating;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
         this.userEntity = userEntity;
         this.hospitalEntity = hospitalEntity;
+        this.hospitalReservation = hospitalReservation;
     }
 
-    @Builder
-    public HospitalReviewEntity(HospitalReviewInputRequest hospitalReviewInputRequest, UserEntity userEntity, HospitalEntity hospitalEntity) {
-        this.hospReviewContent = hospitalReviewInputRequest.content();
-        this.hospReviewRating = hospitalReviewInputRequest.rating();
-        this.userEntity = userEntity;
-        this.hospitalEntity = hospitalEntity;
+    public static HospitalReviewEntity save(HospitalReviewInputRequest hospitalReviewInput, SocialUserEntity user, HospitalEntity hospital, HospitalReservationEntity hospitalReservation){
+        return HospitalReviewEntity.builder()
+            .hospReviewContent(hospitalReviewInput.getContent())
+            .hospReviewRating(hospitalReviewInput.getRating())
+            .userEntity(user)
+            .hospitalEntity(hospital)
+            .hospitalReservation(hospitalReservation)
+            .build();
+    }
+
+    public HospitalReviewEntity update(HospitalReviewUpdateInputRequest hospitalReviewUpdateInput){
+      this.hospReviewContent = hospitalReviewUpdateInput.getContent();
+      this.hospReviewRating = hospitalReviewUpdateInput.getRating();
+      return this;
     }
 }
