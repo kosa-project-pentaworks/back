@@ -54,8 +54,6 @@ public class HospitalEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "hosp_status", length = 5, nullable = false)
     private HospStatus hospStatus;
-    @OneToOne(mappedBy = "hospitalEntity")
-    private HospitalAdmin hospitalAdmin;
     @OneToMany(mappedBy = "hospitalEntity")
     private List<HospitalReviewEntity> hospitalReviewEntity;
 

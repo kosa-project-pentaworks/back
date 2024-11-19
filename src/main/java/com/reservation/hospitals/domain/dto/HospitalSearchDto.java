@@ -8,18 +8,23 @@ public class HospitalSearchDto {
     private String addr;
     private String yadmNm;
     private String telno;
-    private Long hospAdminId;
     private Long reviewCount;
     private Double ratingAvg;
 
-    public HospitalSearchDto(Long hospId, String addr, String yadmNm, String telno, Long hospAdminId, Long reviewCount, Double ratingAvg) {
+    public HospitalSearchDto(Long hospId, String addr, String yadmNm, String telno, Long reviewCount, Double ratingAvg) {
         this.hospId = hospId;
         this.addr = addr;
         this.yadmNm = yadmNm;
         this.telno = telno;
-        this.hospAdminId = hospAdminId;
         this.reviewCount = reviewCount;
         this.ratingAvg = checkRating(ratingAvg);
+    }
+
+    public HospitalSearchDto(Long hospId, String addr, String yadmNm, String telno) {
+        this.hospId = hospId;
+        this.addr = addr;
+        this.yadmNm = yadmNm;
+        this.telno = telno;
     }
 
     public Double checkRating(Double ratingAvg){

@@ -1,4 +1,4 @@
-/* App.css 또는 Modal.css */
+/* ReservationModal.css */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -12,7 +12,55 @@
 }
 
 .modal-content {
+  width: 400px; /* 가로 폭을 줄임 */
   background-color: white;
   padding: 20px;
   border-radius: 5px;
+  position: relative;
+  box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+}
+
+.modal-content h2 {
+  text-align: center; /* 병원 이름 가운데 정렬 */
+}
+
+.modal-content .datepicker-container {
+  display: flex;
+  justify-content: center; /* 달력 가운데 정렬 */
+  margin-top: 20px;
+}
+
+.modal-content .button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.time-slot-button {
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.time-slot-button.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.time-slot-button:hover {
+  background-color: #ddd;
+}
+.time-slot-button.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
 }

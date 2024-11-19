@@ -44,7 +44,17 @@ public class SecurityConfig {
                                 "/api/v1/user/register",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/callback",
-                                "/api/v1/hospital/search"
+                                "/api/v1/hospital/search",
+                                "/api/v1/hospitalreservation",
+                                "/api/v1/payment",
+                                "/api/v1/payment/redisremove",
+                                "/api/v1/hospitalreservation/list",
+                                "/api/v1/hospitalreview/save",
+                                "/api/v1/hospitalreservation/update",
+                                "/api/v1/payment/refund",
+                                "/api/v1/hospitalreview",
+                                "/api/v1/hospitalreview/update",
+                                "/api/v1/data"
                         ).permitAll()
                         .anyRequest().authenticated()
         );

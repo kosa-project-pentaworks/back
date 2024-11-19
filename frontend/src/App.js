@@ -10,8 +10,9 @@ import ProtectedRoute from "./ProtectedRoute";
 import Main from "./pages/Main";
 import KakaoAuthRedirect from "./pages/KakaoAuthRedirect";
 
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import HospitalReservationHistory from "./pages/HospitalReservationHistory";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);  // 로그인 상태 관리

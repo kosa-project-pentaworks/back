@@ -84,6 +84,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
 }
 
 tasks.named("test") {
