@@ -25,7 +25,7 @@ function HospitalReservationHistory() {
   const myReservation = (type) => {
     axios
       .get(
-        `http://localhost:8080/api/v1/hospitalreservation/list?type=${type}&userId=2`
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreservation/list?type=${type}&userId=2`
       )
       .then((response) => {
         console.log(response);
@@ -78,7 +78,9 @@ function HospitalReservationHistory() {
   };
   const searchReservation = (type) => {
     axios
-      .get(`http://localhost:8080/api/v1/hospitalreservation/list?type=${type}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreservation/list?type=${type}`
+      )
       .then((response) => {
         setReservationList(response.data.data);
       });

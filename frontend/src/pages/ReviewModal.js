@@ -27,7 +27,7 @@ const ReviewModal = ({ isOpen, onClose, hostReservation }) => {
     console.log("======>>> ", hospitalReviewInput.hospitalReservationId);
     axios
       .post(
-        `http://localhost:8080/api/v1/hospitalreview/save`,
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreview/save`,
         hospitalReviewInput
       )
       .then((response) => {
