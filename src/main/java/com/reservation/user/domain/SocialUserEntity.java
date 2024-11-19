@@ -21,6 +21,11 @@ public class SocialUserEntity extends MutableBaseEntity {
 
     @Column(name = "provider_id") private String providerId;
 
+    @Column(name = "phone") private String phone;
+
+    @Embedded
+    @Column(name = "address") Address address;
+
     public SocialUserEntity(String username, String provider, String providerId) {
         this.username = username;
         this.provider = provider;
@@ -33,6 +38,7 @@ public class SocialUserEntity extends MutableBaseEntity {
                 .username(this.username)
                 .provider(this.provider)
                 .providerId(this.providerId)
+                .phone(this.phone)
                 .build();
     }
 }

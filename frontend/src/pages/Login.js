@@ -32,9 +32,13 @@ function Login({setIsLoggedIn}) {
             console.log(response);
 
             if (response.data.success) {
-                // 응답이 성공하면 로그인 처리 (토큰 저장 등)
-                // 예: localStorage 에 토큰 저장
-                localStorage.setItem('token', response.data.data);
+                // 토큰 처리: 객체이든 문자열이든 저장 가능하도록 처리
+                const token = typeof response.data.data === 'object'
+                    ? JSON.stringify(response.data.data) // 객체라면 JSON 문자열로 변환
+                    : response.data.data; // 문자열이라면 그대로 사용
+
+                localStorage.setItem('token', token);
+
                 // 이후 페이지 이동 또는 로그인 처리 로직 추가
                 setIsLoggedIn(true)
                 // 예: 대시보드로 이동

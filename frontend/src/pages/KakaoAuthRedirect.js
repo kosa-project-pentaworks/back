@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
-function KakaoAuthRedirect({setIsLoggedIn}) {
+function KakaoAuthRedirect({setIsLoggedIn, setUsername}) {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,34 +16,26 @@ function KakaoAuthRedirect({setIsLoggedIn}) {
 
         axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/callback`, {code})
             .then(response => {
-                console.log('카카오 로그인 성공:', response);
+                console.log(response);
 
-                const token = response.data.data;
-                if (!token) {
-                    console.error('토큰이 반환되지 않았습니다.');
-                    return;
-                }
-
-                // JWT 토큰 저장
+                const token = response.data.data.accessToken;
                 localStorage.setItem('token', token);
 
-                // 페이지 리디렉션
-                navigate('/dashboard');
+                // JWT 디코딩 후 유저네임 추출
+                try {
+                    const decodedToken = jwtDecode(token);
+                    setUsername(decodedToken.username || '사용자');
+                } catch (error) {
+                    console.error('JWT 디코딩 실패:', error);
+                }
 
-                // 상태 업데이트
+                navigate('/dashboard');
                 setTimeout(() => setIsLoggedIn(true), 0);
             })
             .catch(error => {
-                console.error('카카오 로그인 실패:', error.response || error.message || error);
+                console.error('카카오 로그인 실패:', error);
             });
-    }, [navigate]);
-
-    // 페이지가 로드될 때 상태 확인
-    useEffect(() => {
-        if (localStorage.getItem('token')) {
-            setIsLoggedIn(true);
-        }
-    }, []);
+    }, [navigate, setIsLoggedIn, setUsername]);
 
     return (
         <div>카카오 로그인 처리 중...</div>

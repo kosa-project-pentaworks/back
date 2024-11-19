@@ -94,6 +94,27 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase {
     }
 
     @Override
+    public DetailSocialUserResponse findDetailSocialUserByProviderId(String providerId) {
+        Optional<UserDto> byProviderId = fetchUserPort.findByProviderId(providerId);
+
+        if (byProviderId.isEmpty()) {
+            throw new UserException.UserDoesNotExistException();
+        }
+
+        UserDto dto = byProviderId.get();
+
+        return DetailSocialUserResponse
+                .builder()
+                .socialUserId(dto.getUserId())
+                .username(dto.getUsername())
+                .provider(dto.getProvider())
+                .providerId(dto.getProviderId())
+                .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .build();
+    }
+
+    @Override
     public SocialUserResponse findKakaoUser(String accessToken) {
         UserDto userFromKakao = kakaoUserPort.findUserFromKakao(accessToken);
         return new SocialUserResponse(

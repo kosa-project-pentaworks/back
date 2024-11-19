@@ -58,7 +58,9 @@ public class UserRepository implements FetchUserPort, InsertUserPort {
                 null,
                 socialUserEntity.getProvider(),
                 socialUserEntity.getProviderId(),
-                "null"
+                "null",
+                socialUserEntity.getPhone(),
+                socialUserEntity.getAddress()
         ));
     }
 
