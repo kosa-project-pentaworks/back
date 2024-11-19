@@ -32,6 +32,12 @@ public class SocialUserEntity extends MutableBaseEntity {
         this.providerId = providerId;
     }
 
+    public SocialUserEntity updateContactDetails(String phone, Address address) {
+        this.phone = phone;
+        this.address = address;
+        return this;
+    }
+
     public UserDto toDomain() {
         return UserDto.builder()
                 .userId(this.socialUserId)

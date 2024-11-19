@@ -1,16 +1,18 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 
 import axios from 'axios';
 
 function KakaoAuthRedirect({fetchUserInfo}) {
     const navigate = useNavigate();
+    const isProcessing = useRef(false);
 
     useEffect(() => {
         const handleKakaoLogin = async () => {
-            const code = new URL(window.location.href).searchParams.get("code");
+            if (isProcessing.current) return;
+            isProcessing.current = true;
 
+            const code = new URL(window.location.href).searchParams.get("code");
             if (!code) {
                 console.error("카카오 인증 코드가 없습니다.");
                 return;
@@ -29,6 +31,8 @@ function KakaoAuthRedirect({fetchUserInfo}) {
                 navigate("/dashboard");
             } catch (error) {
                 console.error("카카오 로그인 실패:", error);
+            } finally {
+                isProcessing.current = false; // 처리 완료 후 상태 초기화
             }
         };
 

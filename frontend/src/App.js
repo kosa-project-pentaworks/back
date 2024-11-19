@@ -42,6 +42,7 @@ function App() {
         const token = localStorage.getItem("token");
         if (token) {
             fetchUserInfo(token);
+            setIsLoggedIn(true);
         }
     }, []);
 
@@ -80,7 +81,7 @@ function App() {
                                     ) : (
                                         <>
                                             <li className="nav-item">
-                                                <Link className="nav-link" to="/mypage">
+                                                <Link className="btn btn-success" to="/mypage">
                                                     {username || "마이페이지"}
                                                 </Link>
                                             </li>
@@ -113,7 +114,7 @@ function App() {
                         }/>
                         <Route path="/mypage" element={
                             <ProtectedRoute>
-                                <MyPage/>
+                                <MyPage fetchUserInfo={fetchUserInfo}/>
                             </ProtectedRoute>
                         }/>
                     </Routes>
