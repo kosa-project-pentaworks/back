@@ -54,10 +54,11 @@ public class HospitalReservationController {
     @GetMapping("/api/v1/hospitalreservation/list")
     public CustomApiResponse<HospitalReservationPageResponse> hospitalReservationList(
         @RequestParam(value = "type", defaultValue = "") String type,
+        @RequestParam(value = "providerId", defaultValue = "") String providerId,
         @RequestParam(value = "page",defaultValue = "1") int page,
         @RequestParam(value ="size" ,defaultValue = "10") int size
     ){
-        HospitalReservationPageResponse myReservationList = hospitalReservationService.findAllHospitalReservationByUserId(2L,type, page, size);
+        HospitalReservationPageResponse myReservationList = hospitalReservationService.findAllHospitalReservationByUserId(providerId,type, page, size);
         return CustomApiResponse.ok(myReservationList);
     }
 

@@ -114,12 +114,12 @@ public class HospitalReservationRepositoryImpl implements HospitalReservationRep
     // 취소는 CANCEL
     // 리뷰작성까지 끝나면 END
     @Override
-    public PageImpl<FindHospitalReservationDto> findAllByUserId(Long userId, String select, Pageable pageable){
+    public PageImpl<FindHospitalReservationDto> findAllByUserId(String providerId, String select, Pageable pageable){
         QueryResults<Long> reservaionIds = jpaQueryFactory
             .select(hospitalReservationEntity.hospReservationId)
             .from(hospitalReservationEntity)
             .where(
-                hospitalReservationEntity.user.socialUserId.eq(userId),
+                hospitalReservationEntity.user.providerId.eq(providerId),
                 reservationType(select))
             .orderBy(hospitalReservationEntity.hospReservationId.desc())
             .offset(pageable.getOffset())
@@ -150,9 +150,6 @@ public class HospitalReservationRepositoryImpl implements HospitalReservationRep
             )
             .orderBy(hospitalReservationEntity.hospReservationId.desc())
             .fetch();
-        for(FindHospitalReservationDto aa : myReservationList){
-            System.out.println("제발 리뷰 ==>>" + aa.getHospReviewId());
-        }
      return new PageImpl<>(myReservationList, pageable, reservaionIds.getTotal());
     }
 

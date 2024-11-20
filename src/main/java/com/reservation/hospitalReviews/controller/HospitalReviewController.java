@@ -1,11 +1,10 @@
 package com.reservation.hospitalReviews.controller;
 
-
-
 import com.reservation.global.response.CustomApiResponse;
 import com.reservation.hospitalReviews.controller.requerst.HospitalReviewInputRequest;
 import com.reservation.hospitalReviews.controller.requerst.HospitalReviewUpdateInputRequest;
 import com.reservation.hospitalReviews.service.HospitalReviewService;
+import com.reservation.hospitalReviews.service.response.FindHospitalReviewPageResponse;
 import com.reservation.hospitalReviews.service.response.FindOneHospitalReviewResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,9 +36,16 @@ public class HospitalReviewController {
     public void updateReview(
         @RequestBody HospitalReviewUpdateInputRequest hospitalReviewUpdateInput
         ){
-        System.out.println("업데이트");
-        System.out.println("업데이트 ==>> " + hospitalReviewUpdateInput.getContent());
-        System.out.println("업데이트 ==>> " + hospitalReviewUpdateInput.getHospitalReservationId());
         hospitalReviewService.updateHospitalReview(hospitalReviewUpdateInput);
+    }
+
+    @GetMapping("/api/v1/hospitalreview/find")
+    public CustomApiResponse<FindHospitalReviewPageResponse> findReview(
+        @RequestParam(value = "hospId") Long hospId,
+        @RequestParam(value = "page",defaultValue = "1") int page,
+        @RequestParam(value ="size" ,defaultValue = "10") int size
+    ){
+        FindHospitalReviewPageResponse findReview = hospitalReviewService.findHospitalReviewByHopitalId(hospId,page,size);
+        return CustomApiResponse.ok(findReview);
     }
 }

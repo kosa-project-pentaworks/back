@@ -23,7 +23,7 @@ public class PaymentController {
     public CustomApiResponse<Boolean> createPayment(
         @RequestBody CreatePaymentRequest createPaymentRequest
         ){
-
+        System.out.println("ㅈㅓㅇ보?? ==> " + createPaymentRequest.getProviderId());
         Boolean  isvalidPayment = paymentService.createPayment(createPaymentRequest);
         if(isvalidPayment){
         }

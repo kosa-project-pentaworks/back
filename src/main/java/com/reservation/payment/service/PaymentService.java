@@ -54,7 +54,7 @@ public class PaymentService {
             }
         });
         Optional<HospitalEntity> isValidHospital = hospitalRepository.findById(createPaymentRequest.getHospId());
-        Optional<SocialUserEntity> isValidUser = socialUserJpaRepository.findByProviderId("3782292691");
+        Optional<SocialUserEntity> isValidUser = socialUserJpaRepository.findByProviderId(createPaymentRequest.getProviderId());
         // 결제 유저, 병원 있는지 체크
         if(isValidUser.isPresent() && isValidHospital.isPresent()){
             PaymentEntity payment = PaymentEntity.from(createPaymentRequest, isValidHospital.get(), isValidUser.get());

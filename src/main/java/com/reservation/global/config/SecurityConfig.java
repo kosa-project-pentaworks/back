@@ -54,6 +54,7 @@ public class SecurityConfig {
                                 "/api/v1/payment/refund",
                                 "/api/v1/hospitalreview",
                                 "/api/v1/hospitalreview/update",
+                                "/api/v1/hospitalreview/find",
                                 "/api/v1/data"
                         ).permitAll()
                         .anyRequest().authenticated()

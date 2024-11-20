@@ -39,9 +39,6 @@ const ReviewUpdateModal = ({ isOpen, onClose, hostReservation }) => {
       hospReviewId: hostReservation.hospReviewId,
       content: review,
       rating: rating,
-      userId: hostReservation.userId,
-      hospId: hostReservation.hospId,
-      hospitalReservationId: hostReservation.hospReservationId,
     };
     axios
       .post(

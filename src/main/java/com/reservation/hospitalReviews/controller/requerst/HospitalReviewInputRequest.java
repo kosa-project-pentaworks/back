@@ -9,7 +9,7 @@ public class HospitalReviewInputRequest {
     private int rating;
     private Long hospitalReservationId;
     private Long hospId;
-    private Long userId;
+    private String providerId;
 
     public HospitalReviewInputRequest() {
     }

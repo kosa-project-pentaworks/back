@@ -7,12 +7,23 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./ReservationModal.css";
 import { useNavigate } from "react-router-dom";
 import ReviewModal from "./ReviewModal";
+import { jwtDecode } from "jwt-decode";
 
 const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [reservationTimes, setReservationTimes] = useState([]);
+  const [providerId, setProviderId] = useState({
+    id: "",
+  });
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (isOpen) {
+      setProviderId({ id: jwtDecode(token).userId });
+    }
+  }, [isOpen]);
+
   const convertDate = (date) => {
     const offsetDate = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
@@ -20,6 +31,7 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
     const formattedDate = offsetDate.toISOString().split("T")[0];
     return formattedDate;
   };
+
   let redisKey = "";
   if (!isOpen) return null;
 
@@ -69,7 +81,6 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
       date: `${selectedDate.toISOString().split("T")[0]} ${selectedTime}`,
     };
 
-    console.log(reservationData);
     if (window.confirm(reservationData.date + " 결제하시겠습니까?")) {
       // 확인을 누른 경우 실행할 코드
       console.log("결제를 진행합니다.");
@@ -82,6 +93,7 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
       // 취소 관련 처리
     }
   };
+
   const createReservation = () => {
     const selctConvertDate = convertDate(selectedDate);
     const resercationData = {
@@ -134,10 +146,18 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
             reservationAt: convertDate(selectedDate),
             reservationTime: selectedTime,
             redisKey: redisKey,
+            providerId: providerId.id,
           };
 
           axios
-            .post(`${process.env.REACT_APP_API_URL}/v1/payment`, detailPayment)
+            .post(
+              `${process.env.REACT_APP_API_URL}/v1/payment`,
+              detailPayment,
+              {
+                headers: { Authorization: `Bearer ${token}` }, // 인증 헤더 추가
+                withCredentials: true, // CORS 인증 설정
+              }
+            )
             .then((response) => {
               console.log(response);
               navigate("/hospitalReservationHistory");

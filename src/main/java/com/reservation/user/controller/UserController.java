@@ -25,6 +25,7 @@ public class UserController {
     private final ModifyUserUseCase modifyUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
 
+
     @GetMapping("/{providerId}")
     public CustomApiResponse<DetailSocialUserResponse> findSocialUserByProviderId(@PathVariable String providerId) {
         return CustomApiResponse.ok(fetchUserUseCase.findDetailSocialUserByProviderId(providerId));

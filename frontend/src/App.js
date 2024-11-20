@@ -1,9 +1,9 @@
-import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
-import {useEffect, useState} from "react";
-import { jwtDecode } from 'jwt-decode';
+import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
@@ -16,8 +16,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);  // 로그인 상태 관리
-    const [username, setUsername] = useState(''); // 로그인된 유저의 이름
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
+  const [username, setUsername] = useState(""); // 로그인된 유저의 이름
+
 
     // 유저 정보 갱신 함수
     const fetchUserInfo = async (token) => {
@@ -46,18 +47,18 @@ function App() {
         }
     }, []);
 
-    const handleLogout = async (e) => {
-        e.preventDefault();
-        try {
-            // 로컬 스토리지에서 토큰 삭제
-            localStorage.removeItem('token');
-            // 로그인 페이지로 리디렉션
-            setIsLoggedIn(false)
-            setUsername('');
-        } catch (error) {
-            alert('로그아웃 실패')
-        }
-    };
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      // 로컬 스토리지에서 토큰 삭제
+      localStorage.removeItem("token");
+      // 로그인 페이지로 리디렉션
+      setIsLoggedIn(false);
+      setUsername("");
+    } catch (error) {
+      alert("로그아웃 실패");
+    }
+  };
 
     return (
         <Router>
@@ -112,6 +113,14 @@ function App() {
                                 <Dashboard/>
                             </ProtectedRoute>
                         }/>
+                          <Route
+              path="/hospitalReservationHistory"
+              element={
+                <ProtectedRoute>
+                  <HospitalReservationHistory />
+                </ProtectedRoute>
+              }
+            />
                         <Route path="/mypage" element={
                             <ProtectedRoute>
                                 <MyPage fetchUserInfo={fetchUserInfo}/>
