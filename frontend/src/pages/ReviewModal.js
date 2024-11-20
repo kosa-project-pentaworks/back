@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 
-const ReviewModal = ({ isOpen, onClose, hostReservation }) => {
+const ReviewModal = ({ isOpen, onClose, hostReservation, userData }) => {
   const [rating, setRating] = useState(1); // 별점 상태
   const [review, setReview] = useState(""); // 리뷰 내용 상태
 
@@ -21,6 +21,7 @@ const ReviewModal = ({ isOpen, onClose, hostReservation }) => {
       rating: rating,
       hospitalReservationId: hostReservation.hospReservationId,
       hospId: hostReservation.hospId,
+      providerId: userData.providerId,
     };
     console.log("======>>> ", hospitalReviewInput.content);
     console.log("======>>> ", hospitalReviewInput.rating);
@@ -28,7 +29,11 @@ const ReviewModal = ({ isOpen, onClose, hostReservation }) => {
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/v1/hospitalreview/save`,
-        hospitalReviewInput
+        hospitalReviewInput,
+        {
+          headers: { Authorization: `Bearer ${userData.token}` }, // 인증 헤더 추가
+          withCredentials: true, // CORS 인증 설정
+        }
       )
       .then((response) => {
         if (response.data.data) {

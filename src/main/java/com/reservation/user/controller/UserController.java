@@ -20,10 +20,10 @@ public class UserController {
     private final RegisterUserUseCase registerUserUseCase;
     private final FetchUserUseCase fetchUserUseCase;
 
-    @GetMapping("/{email}")
-    public CustomApiResponse<SimpleUserResponse> findUserByEmail(@PathVariable String email) {
-        return CustomApiResponse.ok(fetchUserUseCase.findSimpleUserByEmail(email));
-    }
+//    @GetMapping("/{email}")
+//    public CustomApiResponse<SimpleUserResponse> findUserByEmail(@PathVariable String email) {
+//        return CustomApiResponse.ok(fetchUserUseCase.findSimpleUserByEmail(email));
+//    }
 
     @GetMapping("/{providerId}")
     public CustomApiResponse<DetailSocialUserResponse> findSocialUserByProviderId(@PathVariable String providerId) {

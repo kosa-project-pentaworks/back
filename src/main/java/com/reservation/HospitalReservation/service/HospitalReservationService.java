@@ -75,11 +75,10 @@ public class HospitalReservationService {
         return hospitalReservationRepository.findOneHospitalReservation(hospitalReservationId);
     }
     @Transactional(readOnly = true)
-    public HospitalReservationPageResponse findAllHospitalReservationByUserId(Long userId, String type, int page, int size){
+    public HospitalReservationPageResponse findAllHospitalReservationByUserId(String providerId, String type, int page, int size){
         Pageable pageable = PageRequest.of(page - 1, size);
-        PageImpl<FindHospitalReservationDto> findHospitalRservation =  hospitalReservationRepository.findAllByUserId(5L, type,pageable);
+        PageImpl<FindHospitalReservationDto> findHospitalRservation =  hospitalReservationRepository.findAllByUserId(providerId, type,pageable);
         return HospitalReservationPageResponse.response(findHospitalRservation.getNumber(), findHospitalRservation.getTotalPages(), findHospitalRservation.hasPrevious(), findHospitalRservation.hasNext(), findHospitalRservation.getContent());
-
     }
 
     // 예약 정보 수정

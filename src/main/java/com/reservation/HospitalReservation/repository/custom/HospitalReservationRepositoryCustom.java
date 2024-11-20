@@ -17,7 +17,7 @@ public interface HospitalReservationRepositoryCustom {
     FindOneHospitalReservationPaymentDto findOneHospitalReservation(Long hospitalReservationId);
     List<FindHospitalReservationDto> findHospitalReservationByUserId(Long UserId);
     List<HospitalReservationEntity> findAllByReservationAt(LocalDate reservationAt);
-    PageImpl<FindHospitalReservationDto> findAllByUserId(Long userId, String select, Pageable pageable);
+    PageImpl<FindHospitalReservationDto> findAllByUserId(String providerId, String select, Pageable pageable);
     HospitalReservationEntity findOneByReservationId(Long reservationId);
 
 }

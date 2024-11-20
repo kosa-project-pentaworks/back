@@ -1,0 +1,25 @@
+.review-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.review-box ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.review-box ul li {
+  margin-bottom: 8px;
+}
+
+.review-box ul li:last-child {
+  margin-bottom: 0;
+}
+
+.review-box ul li:first-child {
+  font-weight: bold;
+}

@@ -1,0 +1,112 @@
+.hospitalContainer {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(400px, 1fr)
+  ); /* 박스 최소 크기 설정 */
+  gap: 24px; /* 아이템 간 간격 */
+  padding: 24px; /* 외부 여백 */
+}
+
+.hospitalList {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  height: auto;
+  transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
+}
+
+.hospitalList:hover {
+  background-color: #e6f7ff; /* 배경색 변경 */
+  transform: scale(1.02); /* 약간 확대 */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+}
+
+.hospitalList > div:first-child {
+  flex: 1; /* 텍스트 영역 확장 */
+}
+
+.hospitalList img {
+  width: 150px; /* 정사각형 크기 */
+  height: 150px; /* 정사각형 크기 */
+  border-radius: 8px; /* 사진 둥근 모서리 */
+  object-fit: cover; /* 사진 비율 유지하며 크기에 맞게 자르기 */
+  margin-left: auto; /* 오른쪽 끝으로 밀어내기 */
+}
+
+.hospitalList ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hospitalList button {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.hospitalList button:hover {
+  background-color: #0056b3;
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+  .hospitalContainer {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(250px, 1fr)
+    ); /* 좁은 화면에서 박스 크기 조정 */
+  }
+
+  .hospitalList {
+    padding: 12px;
+  }
+
+  .hospitalList img {
+    width: 120px; /* 좁은 화면에서 정사각형 크기 축소 */
+    height: 120px;
+  }
+}
+
+.highlight {
+  font-weight: bold; /* 굵게 */
+  font-size: 1.2em; /* 텍스트 크기 확대 */
+}
+
+.pagenav {
+  display: flex; /* 플렉스 박스 사용 */
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center; /* 세로 정렬 (추가적인 정렬) */
+  margin-top: 16px; /* 위쪽 여백 추가 */
+  gap: 8px; /* 버튼 간격 */
+}
+
+.pagenav button {
+  padding: 8px 12px; /* 버튼 여백 */
+  border: 1px solid #ddd; /* 경계선 추가 */
+  border-radius: 4px; /* 둥근 모서리 */
+  background-color: #f9f9f9; /* 버튼 배경색 */
+  color: #007bff; /* 텍스트 색 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  transition: background-color 0.3s ease; /* 호버 효과 전환 */
+}
+
+.pagenav button:hover {
+  background-color: #007bff; /* 호버 시 배경색 */
+  color: white; /* 텍스트 색 변경 */
+}

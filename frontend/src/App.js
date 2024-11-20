@@ -1,9 +1,9 @@
-import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
-import {useEffect, useState} from "react";
-import { jwtDecode } from 'jwt-decode';
+import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
@@ -15,99 +15,127 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import HospitalReservationHistory from "./pages/HospitalReservationHistory";
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);  // 로그인 상태 관리
-    const [username, setUsername] = useState(''); // 로그인된 유저의 이름
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
+  const [username, setUsername] = useState(""); // 로그인된 유저의 이름
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setUsername(decodedToken.username || '사용자');
-                setIsLoggedIn(true);
-            } catch (error) {
-                console.error('JWT 디코딩 실패:', error);
-                setIsLoggedIn(false);
-            }
-        }
-    }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUsername(decodedToken.username || "사용자");
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("JWT 디코딩 실패:", error);
+        setIsLoggedIn(false);
+      }
+    }
+  }, []);
 
-    const handleLogout = async (e) => {
-        e.preventDefault();
-        try {
-            // 로컬 스토리지에서 토큰 삭제
-            localStorage.removeItem('token');
-            // 로그인 페이지로 리디렉션
-            setIsLoggedIn(false)
-            setUsername('');
-        } catch (error) {
-            alert('로그아웃 실패')
-        }
-    };
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      // 로컬 스토리지에서 토큰 삭제
+      localStorage.removeItem("token");
+      // 로그인 페이지로 리디렉션
+      setIsLoggedIn(false);
+      setUsername("");
+    } catch (error) {
+      alert("로그아웃 실패");
+    }
+  };
 
-    return (
-        <Router>
-            <div>
-                {/* 상단 네비게이션 바 */}
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <div className="container">
-                        <Link className="navbar-brand" to="/">병원가조</Link>
-                        <div className="collapse navbar-collapse">
-                            <ul className="navbar-nav ms-auto">
-                                {
-                                    !isLoggedIn ? (
-                                        <>
-                                            <li className="nav-item">
-                                                <Link className="nav-link" to="/login">로그인</Link>
-                                            </li>
-                                            <li className="nav-item">
-                                                <Link className="nav-link" to="/signup">회원가입</Link>
-                                            </li>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <li className="nav-item">
-                                                <Link className="nav-link" to="/mypage">
-                                                    {username || "마이페이지"}
-                                                </Link>
-                                            </li>
-                                            <li className="nav-item">
-                                                <button className="btn btn-danger" onClick={handleLogout}>
-                                                    로그아웃
-                                                </button>
-                                            </li>
-                                        </>
-                                    )
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-
-                {/* 페이지 라우팅 */}
-                <div className="container mt-5">
-                    <Routes>
-                        <Route path="/" element={<Main/>}/>
-                        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
-                        <Route path="/signup" element={<Signup/>}/>
-                        <Route path="/login/oauth2/code/kakao"
-                               element={<KakaoAuthRedirect setIsLoggedIn={setIsLoggedIn} setUsername={setUsername}/>}/>
-
-                        <Route path="/dashboard" element={
-                            <ProtectedRoute>
-                                <Dashboard/>
-                            </ProtectedRoute>
-                        }/>
-                        <Route path="/mypage" element={
-                            <ProtectedRoute>
-                                <MyPage/>
-                            </ProtectedRoute>
-                        }/>
-                    </Routes>
-                </div>
+  return (
+    <Router>
+      <div>
+        {/* 상단 네비게이션 바 */}
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <div className="container">
+            <Link className="navbar-brand" to="/">
+              병원가조
+            </Link>
+            <div className="collapse navbar-collapse">
+              <ul className="navbar-nav ms-auto">
+                {!isLoggedIn ? (
+                  <>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/login">
+                        로그인
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/signup">
+                        회원가입
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/mypage">
+                        {username || "마이페이지"}
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <button className="btn btn-danger" onClick={handleLogout}>
+                        로그아웃
+                      </button>
+                    </li>
+                  </>
+                )}
+              </ul>
             </div>
-        </Router>
-    );
+          </div>
+        </nav>
+
+        {/* 페이지 라우팅 */}
+        <div className="container mt-5">
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route
+              path="/login"
+              element={<Login setIsLoggedIn={setIsLoggedIn} />}
+            />
+            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/login/oauth2/code/kakao"
+              element={
+                <KakaoAuthRedirect
+                  setIsLoggedIn={setIsLoggedIn}
+                  setUsername={setUsername}
+                />
+              }
+            />
+
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hospitalReservationHistory"
+              element={
+                <ProtectedRoute>
+                  <HospitalReservationHistory />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mypage"
+              element={
+                <ProtectedRoute>
+                  <MyPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
