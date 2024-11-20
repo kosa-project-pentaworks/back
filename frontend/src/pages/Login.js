@@ -41,8 +41,8 @@ function Login({setIsLoggedIn}) {
 
                 // 이후 페이지 이동 또는 로그인 처리 로직 추가
                 setIsLoggedIn(true)
-                // 예: 대시보드로 이동
-                navigate('/dashboard');
+
+                window.location.href = `http://52.79.220.59:8090/admin/selectHospitalReservationListAll`;
             } else {
                 setErrorMessage('로그인 실패: 사용자 정보가 일치하지 않습니다.');
             }
