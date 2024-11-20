@@ -1,12 +1,16 @@
 package com.reservation.user.repository;
 
 import com.reservation.global.exception.UserException;
+import com.reservation.user.domain.Address;
 import com.reservation.user.domain.SocialUserEntity;
 import com.reservation.user.domain.UserDto;
 import com.reservation.user.domain.UserEntity;
+import com.reservation.user.repository.port.DeleteUserPort;
 import com.reservation.user.repository.port.FetchUserPort;
 import com.reservation.user.repository.port.InsertUserPort;
+import com.reservation.user.repository.port.UpdateUserPort;
 import com.reservation.user.repository.request.CreateUser;
+import com.reservation.user.repository.request.UpdateSocialUser;
 import com.reservation.user.repository.social.SocialUserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,7 +21,7 @@ import java.util.Optional;
 @Repository
 @Transactional
 @RequiredArgsConstructor
-public class UserRepository implements FetchUserPort, InsertUserPort {
+public class UserRepository implements FetchUserPort, InsertUserPort, UpdateUserPort, DeleteUserPort {
 
     private final UserJpaRepository userJpaRepository;
     private final SocialUserJpaRepository socialUserJpaRepository;
@@ -77,5 +81,21 @@ public class UserRepository implements FetchUserPort, InsertUserPort {
         SocialUserEntity socialUserEntity = new SocialUserEntity(username, provider, providerId);
         return socialUserJpaRepository.save(socialUserEntity)
                 .toDomain();
+    }
+
+    @Override
+    public UserDto updateSocialUser(UpdateSocialUser update) {
+        SocialUserEntity socialUser = socialUserJpaRepository.findByProviderId(update.getProviderId())
+                .orElseThrow(() -> new UserException.UserDoesNotExistException());
+
+        socialUser.updateContactDetails(update.getPhone(), update.getAddress());
+        socialUserJpaRepository.save(socialUser);
+
+        return socialUser.toDomain();
+    }
+
+    @Override
+    public void deleteByProviderId(String providerId) {
+        socialUserJpaRepository.deleteByProviderId(providerId);
     }
 }

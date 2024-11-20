@@ -1,13 +1,16 @@
 package com.reservation.user.controller;
 
 import com.reservation.global.response.CustomApiResponse;
+import com.reservation.user.controller.request.UserModificationRequest;
 import com.reservation.user.controller.request.UserRegistrationRequest;
+import com.reservation.user.service.command.SocialUserModificationCommand;
 import com.reservation.user.service.command.UserRegistrationCommand;
 import com.reservation.user.service.response.DetailSocialUserResponse;
-import com.reservation.user.service.response.SimpleUserResponse;
-import com.reservation.user.service.response.SocialUserResponse;
+import com.reservation.user.service.response.SocialUserModificationResponse;
 import com.reservation.user.service.response.UserRegistrationResponse;
+import com.reservation.user.service.usecase.DeleteUserUseCase;
 import com.reservation.user.service.usecase.FetchUserUseCase;
+import com.reservation.user.service.usecase.ModifyUserUseCase;
 import com.reservation.user.service.usecase.RegisterUserUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final RegisterUserUseCase registerUserUseCase;
     private final FetchUserUseCase fetchUserUseCase;
+    private final RegisterUserUseCase registerUserUseCase;
+    private final ModifyUserUseCase modifyUserUseCase;
+    private final DeleteUserUseCase deleteUserUseCase;
 
-//    @GetMapping("/{email}")
-//    public CustomApiResponse<SimpleUserResponse> findUserByEmail(@PathVariable String email) {
-//        return CustomApiResponse.ok(fetchUserUseCase.findSimpleUserByEmail(email));
-//    }
 
     @GetMapping("/{providerId}")
     public CustomApiResponse<DetailSocialUserResponse> findSocialUserByProviderId(@PathVariable String providerId) {
@@ -38,5 +39,22 @@ public class UserController {
                 .email(request.getEmail())
                 .build();
         return CustomApiResponse.ok(registerUserUseCase.register(command));
+    }
+
+    @PutMapping("/{providerId}")
+    public CustomApiResponse<SocialUserModificationResponse> modify(@PathVariable String providerId, @RequestBody UserModificationRequest request) {
+        SocialUserModificationCommand command = SocialUserModificationCommand.builder()
+                .providerId(providerId)
+                .phone(request.getPhone())
+                .address(request.getAddress())
+                .build();
+
+        return CustomApiResponse.ok(modifyUserUseCase.modify(command));
+    }
+
+    @DeleteMapping("/{providerId}")
+    public CustomApiResponse<String> deleteUser(@PathVariable String providerId) {
+        deleteUserUseCase.deleteByProviderId(providerId);
+        return CustomApiResponse.ok("Deleted Successfully");
     }
 }

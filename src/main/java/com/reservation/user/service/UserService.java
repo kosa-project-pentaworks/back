@@ -2,14 +2,16 @@ package com.reservation.user.service;
 
 import com.reservation.global.exception.UserException;
 import com.reservation.user.domain.UserDto;
-import com.reservation.user.repository.port.FetchUserPort;
-import com.reservation.user.repository.port.InsertUserPort;
-import com.reservation.user.repository.port.KakaoUserPort;
+import com.reservation.user.repository.port.*;
 import com.reservation.user.repository.request.CreateUser;
+import com.reservation.user.repository.request.UpdateSocialUser;
+import com.reservation.user.service.command.SocialUserModificationCommand;
 import com.reservation.user.service.command.SocialUserRegistrationCommand;
 import com.reservation.user.service.command.UserRegistrationCommand;
 import com.reservation.user.service.response.*;
+import com.reservation.user.service.usecase.DeleteUserUseCase;
 import com.reservation.user.service.usecase.FetchUserUseCase;
+import com.reservation.user.service.usecase.ModifyUserUseCase;
 import com.reservation.user.service.usecase.RegisterUserUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,13 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements RegisterUserUseCase, FetchUserUseCase {
+public class UserService implements RegisterUserUseCase, FetchUserUseCase, ModifyUserUseCase, DeleteUserUseCase {
 
     private final FetchUserPort fetchUserPort;
     private final InsertUserPort insertUserPort;
+    private final UpdateUserPort updateUserPort;
+    private final DeleteUserPort deleteUserPort;
+
     private final KakaoUserPort kakaoUserPort;
 
     @Override
@@ -120,5 +125,29 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase {
         return new SocialUserResponse(
                 userFromKakao.getUsername(), "kakao", userFromKakao.getProviderId()
         );
+    }
+
+    @Override
+    public SocialUserModificationResponse modify(SocialUserModificationCommand request) {
+        Optional<UserDto> existingUser = fetchUserPort.findByProviderId(request.providerId());
+
+        if (existingUser.isEmpty()) {
+            throw new UserException.UserDoesNotExistException();
+        }
+
+        UserDto updatedUser = updateUserPort.updateSocialUser(
+                UpdateSocialUser.builder()
+                        .providerId(request.providerId())
+                        .phone(request.phone())
+                        .address(request.address())
+                        .build()
+        );
+
+        return new SocialUserModificationResponse(updatedUser.getProvider(), updatedUser.getPhone(), updatedUser.getAddress());
+    }
+
+    @Override
+    public void deleteByProviderId(String providerId) {
+        deleteUserPort.deleteByProviderId(providerId);
     }
 }
