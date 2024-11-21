@@ -1,0 +1,94 @@
+/* 전체 선택창을 감싸는 컨테이너 */
+.centered-form {
+  display: flex; /* 가로 배치 */
+  gap: 16px; /* 선택창 사이 간격 */
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  flex-wrap: wrap; /* 화면이 좁아질 경우 줄바꿈 */
+  margin-bottom: 1.5rem; /* 아래쪽 여백 */
+}
+
+/* 선택창 스타일 */
+select {
+  width: 200px; /* 기본 너비 */
+  max-width: 100%; /* 최대 너비 화면에 맞추기 */
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da; /* 기본 테두리 */
+  border-radius: 8px; /* 둥근 모서리 */
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 선택창 포커스 스타일 */
+select:focus {
+  border-color: #007bff; /* 포커스 시 파란 테두리 */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25); /* 포커스 시 그림자 */
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .centered-form {
+    flex-direction: column; /* 작은 화면에서는 수직으로 배치 */
+    gap: 12px; /* 선택창 사이의 간격 조정 */
+    align-items: flex-start; /* 선택창을 왼쪽 정렬 */
+  }
+
+  select {
+    width: 100%; /* 작은 화면에서는 전체 너비 사용 */
+    max-width: 100%;
+  }
+}
+.select-box select {
+  padding: 0.5rem 1.5rem 0.5rem 2rem; /* 왼쪽에 여유 공간을 두어 아이콘을 넣을 수 있도록 */
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  appearance: none; /* 기본 드롭다운 화살표 제거 */
+  background-color: #fff;
+  color: #333;
+  width: 180px; /* 박스 크기 */
+  cursor: pointer;
+}
+.select-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* 각 선택 박스 사이의 간격 */
+  margin-top: 1rem;
+}
+
+.select-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select-box::before {
+  content: "📍"; /* 아이콘을 직접 넣거나 이미지로 대체 가능 */
+  position: absolute;
+  left: 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.select-box:first-of-type::before {
+  content: "📍"; /* 첫 번째 선택 박스의 아이콘 */
+}
+
+.select-box:last-of-type::before {
+  content: "🏥"; /* 두 번째 선택 박스의 아이콘 */
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+  .select-container {
+    flex-direction: column; /* 작은 화면에서는 수직으로 배치 */
+    align-items: flex-start; /* 선택창을 왼쪽 정렬 */
+    gap: 12px; /* 선택 박스 사이의 간격 조정 */
+  }
+
+  .select-box select {
+    width: 100%; /* 작은 화면에서는 전체 너비 사용 */
+    max-width: 100%;
+  }
+}

@@ -56,24 +56,47 @@ function ReviewListModal({ isOpen, onClose, hospital }) {
         onClick={(e) => e.stopPropagation()} // 이벤트 전파 방지
       >
         <div>
-          <p>{hospital.yadmNm} 리뷰</p>
+          <div className="top">
+            <p>{hospital.yadmNm} 리뷰</p>
+            <button className="modal-close" onClick={onClose}>
+              &times;
+            </button>
+          </div>
           {findReviews.reviewList.map((item) => (
             <div className="review-box" key={item.id}>
               <ul>
-                <div>
-                  <li>{item.username}</li>
-                  <li>
+                <div className="title">
+                  <li className="highlight">{item.username}</li>
+                  <li
+                    style={{ fontSize: "0.8em", color: "rgba(0, 0, 0, 0.6)" }}
+                  >
                     방문 날짜: {item.reservationAt} {item.reservationTime}
                   </li>
                 </div>
-                <li>평점: {item.hospReviewRating}</li>
+                {Array.from({ length: 5 }, (_, index) => {
+                  const starValue = index + 1;
+                  return (
+                    <span
+                      key={index}
+                      style={{
+                        fontSize: "24px",
+                        color:
+                          starValue <= item.hospReviewRating
+                            ? "#FFD700"
+                            : "#C0C0C0",
+                        // cursor: "pointer",
+                        marginRight: "5px",
+                      }}
+                      // onClick={() => handleRatingClick(starValue)}
+                    >
+                      ★
+                    </span>
+                  );
+                })}
                 <li>{item.hospReviewContent}</li>
               </ul>
             </div>
           ))}
-          <button className="modal-close" onClick={onClose}>
-            &times;
-          </button>
         </div>
         <div className="pagenav">
           {findReviews.previous ? (

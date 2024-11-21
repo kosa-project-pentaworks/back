@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import axios from "axios";
 import Location from "./Location";
 import ReservationModal from "./ReservationModal";
 import { jwtDecode } from "jwt-decode";
 import "./Dashboard.css";
 import ReviewListModal from "./ReviewListModal";
+import { StarIcon } from "@heroicons/react/solid";
 
 function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달창 열때
@@ -112,14 +113,21 @@ function Dashboard() {
   return (
     <div className="card shadow-sm p-4" style={{ width: "100%" }}>
       <h3 className="text-center mb-4">병원목록</h3>
-      <input
-        type="text"
-        id=""
-        value={searchInput.keyWord}
-        onChange={onChangeKeyWord}
-      />
-      <Location onChangeSearchLocation={onChangeSearchLocation} />
-      <button onClick={onClickSearch}>병원 조회</button>
+      <div className="searchBox">
+        <div className="searchBar">
+          <input
+            className="keyword"
+            type="text"
+            id=""
+            value={searchInput.keyWord}
+            onChange={onChangeKeyWord}
+          />
+          <button className="searchButton" onClick={onClickSearch}>
+            병원 조회
+          </button>
+        </div>
+        <Location onChangeSearchLocation={onChangeSearchLocation} />
+      </div>
       <div className="container mt-4">
         <div className="hospitalContainer">
           {hospitalPages.hospitals.map((item) => (
@@ -137,17 +145,49 @@ function Dashboard() {
                   >
                     {item.telno}
                   </li>
-                  <div>
-                    <span>리뷰 {item.reviewCount}</span>
-                    <span>평점 {item.ratingAvg}</span>{" "}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleReservationClick(item);
-                      }}
-                    >
-                      예약하기
-                    </button>
+                  <div className="info-row">
+                    {item.reviewCount === 0 ? (
+                      <div className="info-details">
+                        <div className="flex-row">
+                          <StarIcon
+                            style={{ width: "15px", height: "15px" }}
+                            className="text-yellow-500"
+                          />
+                          <span className="no-wrap">수집중</span>
+                        </div>
+                        <button
+                          className="no-wrap"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleReservationClick(item);
+                          }}
+                        >
+                          예약하기
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="info-details">
+                        <span className="star">
+                          <StarIcon
+                            style={{ width: "15px", height: "15px" }}
+                            className="text-yellow-500"
+                          />
+                          {item.ratingAvg}
+                        </span>
+                        &nbsp;
+                        <span className="no-wrap">리뷰 {item.reviewCount}</span>
+                        <button
+                          className="no-wrap"
+                          style={{ marginLeft: "6px" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleReservationClick(item);
+                          }}
+                        >
+                          예약하기
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </ul>
               </div>

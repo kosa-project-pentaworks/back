@@ -1,112 +1,137 @@
-.hospitalContainer {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(400px, 1fr)
-  ); /* 박스 최소 크기 설정 */
-  gap: 24px; /* 아이템 간 간격 */
-  padding: 24px; /* 외부 여백 */
-}
-
-.hospitalList {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 24px;
+/* 부모 컨테이너 설정 */
+.card {
   width: 100%;
-  height: auto;
-  transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
+  max-width: 1200px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 가운데 정렬 */
+  padding: 16px; /* 패딩 설정 */
+  box-sizing: border-box; /* 전체 너비에 패딩 포함 */
 }
 
-.hospitalList:hover {
-  background-color: #e6f7ff; /* 배경색 변경 */
-  transform: scale(1.02); /* 약간 확대 */
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
-  cursor: pointer; /* 마우스 포인터 변경 */
+/* 검색 박스 설정 */
+.searchBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem; /* 각 요소 간의 간격 */
+  width: 100%;
+  max-width: 600px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 중앙으로 배치 */
 }
 
-.hospitalList > div:first-child {
-  flex: 1; /* 텍스트 영역 확장 */
+/* 검색창과 버튼을 가로로 유지 */
+.searchBar {
+  display: flex;
+  flex-wrap: wrap; /* 요소들이 줄을 넘지 않게 래핑 설정 */
+  gap: 0.5rem; /* 검색창과 버튼 사이의 간격 */
+  width: 100%;
+  justify-content: space-between; /* 검색창과 버튼의 간격을 일정하게 유지 */
 }
 
-.hospitalList img {
-  width: 150px; /* 정사각형 크기 */
-  height: 150px; /* 정사각형 크기 */
-  border-radius: 8px; /* 사진 둥근 모서리 */
-  object-fit: cover; /* 사진 비율 유지하며 크기에 맞게 자르기 */
-  margin-left: auto; /* 오른쪽 끝으로 밀어내기 */
+.keyword {
+  flex: 1; /* 남은 공간을 채우도록 설정 */
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  max-width: calc(100% - 110px); /* 최대 너비를 버튼을 고려하여 설정 */
+}
+.keyword:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.2);
 }
 
-.hospitalList ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.hospitalList button {
-  margin-top: 8px;
-  padding: 8px 12px;
+.searchButton {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  flex-shrink: 0; /* 버튼의 크기가 줄어들지 않도록 설정 */
 }
 
-.hospitalList button:hover {
+.searchButton:hover {
   background-color: #0056b3;
+}
+
+/* 병원 리스트 설정 */
+.hospitalContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hospitalInfo {
+  flex: 1; /* 병원 정보가 남은 공간을 채우도록 설정 */
+  min-width: 0; /* 콘텐츠가 넘치는 것을 방지하기 위해 최소 너비를 설정 */
+}
+
+.hospitalList {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px; /* 병원 정보와 사진 간 간격 */
+  width: 100%;
+  transition: all 0.3s ease;
+  max-width: 100%;
+}
+
+.hospitalList:hover {
+  background-color: #e6f7ff;
+  transform: scale(1.02);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.hospitalImage img {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.star {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.no-wrap {
+  white-space: nowrap; /* 줄바꿈 방지 */
+  overflow: hidden; /* 넘친 텍스트 숨기기 (필요한 경우) */
+  text-overflow: ellipsis; /* 넘친 텍스트에 "..." 처리 (필요한 경우) */
 }
 
 /* 반응형 조정 */
 @media (max-width: 768px) {
+  .card {
+    padding: 8px; /* 좁은 화면에서 패딩 줄이기 */
+  }
+
+  .searchBar {
+    width: 100%;
+  }
+
+  .keyword {
+    max-width: calc(100% - 110px); /* 버튼을 고려하여 입력창 최대 너비 조정 */
+  }
+
   .hospitalContainer {
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(250px, 1fr)
-    ); /* 좁은 화면에서 박스 크기 조정 */
+    grid-template-columns: 1fr; /* 작은 화면에서는 한 줄에 하나씩 */
   }
 
   .hospitalList {
-    padding: 12px;
+    flex-direction: column; /* 좁은 화면에서는 세로 배치 */
+    gap: 12px;
   }
 
-  .hospitalList img {
-    width: 120px; /* 좁은 화면에서 정사각형 크기 축소 */
-    height: 120px;
+  .hospitalImage img {
+    width: 100%;
+    height: auto;
   }
-}
-
-.highlight {
-  font-weight: bold; /* 굵게 */
-  font-size: 1.2em; /* 텍스트 크기 확대 */
-}
-
-.pagenav {
-  display: flex; /* 플렉스 박스 사용 */
-  justify-content: center; /* 중앙 정렬 */
-  align-items: center; /* 세로 정렬 (추가적인 정렬) */
-  margin-top: 16px; /* 위쪽 여백 추가 */
-  gap: 8px; /* 버튼 간격 */
-}
-
-.pagenav button {
-  padding: 8px 12px; /* 버튼 여백 */
-  border: 1px solid #ddd; /* 경계선 추가 */
-  border-radius: 4px; /* 둥근 모서리 */
-  background-color: #f9f9f9; /* 버튼 배경색 */
-  color: #007bff; /* 텍스트 색 */
-  cursor: pointer; /* 마우스 포인터 변경 */
-  transition: background-color 0.3s ease; /* 호버 효과 전환 */
-}
-
-.pagenav button:hover {
-  background-color: #007bff; /* 호버 시 배경색 */
-  color: white; /* 텍스트 색 변경 */
 }
