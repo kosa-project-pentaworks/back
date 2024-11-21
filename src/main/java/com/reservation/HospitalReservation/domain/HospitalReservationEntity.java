@@ -21,7 +21,10 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Entity
 @ToString
-@Table(name = "hospital_reservation")
+@Table(name = "hospital_reservation",
+    indexes = {
+    @Index(name="idx_reservation_reservation_at",columnList = "reservation_at")
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HospitalReservationEntity extends MutableBaseEntity {
     @Id

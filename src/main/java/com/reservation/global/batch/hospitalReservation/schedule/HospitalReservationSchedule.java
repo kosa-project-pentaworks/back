@@ -22,6 +22,7 @@
 //    private final JobRegistry jobRegistry;
 //
 //    @Scheduled(cron = "0 0/1 * * * *") // 1분마다 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 24시에 실행
 //    public void runJob() {
 //        String time = LocalDateTime.now().toString();
 //        try {

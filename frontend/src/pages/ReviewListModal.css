@@ -23,3 +23,29 @@
 .review-box ul li:first-child {
   font-weight: bold;
 }
+
+.highlight {
+  font-weight: bold; /* 굵게 */
+  font-size: 1em; /* 텍스트 크기 확대 */
+}
+
+.title {
+  display: flex; /* Flexbox to make items arranged horizontally */
+  align-items: center; /* Vertically centers the items */
+  gap: 1rem; /* Adds space between the elements */
+}
+
+.top {
+  display: flex; /* Makes the div a flex container */
+  align-items: center; /* Vertically center align items */
+  justify-content: space-between; /* Pushes the elements to the opposite ends */
+  padding: 0.5rem; /* Optional: add padding for better appearance */
+}
+
+.modal-close {
+  background: none; /* Removes default button styling */
+  border: none; /* Removes button border */
+  font-size: 1.5rem; /* Makes the close button larger */
+  cursor: pointer; /* Changes cursor to pointer to indicate it's clickable */
+  margin-left: auto; /* Pushes the button to the right */
+}

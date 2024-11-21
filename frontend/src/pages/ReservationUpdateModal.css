@@ -1,0 +1,16 @@
+@media (max-width: 768px) {
+  .timeSlotContainer {
+    grid-template-columns: repeat(2, 1fr); /* 작은 화면에서는 한 줄에 2개씩 */
+  }
+
+  .modalContent {
+    width: 95%;
+    height: 90vh; /* 모바일에서 더 많은 높이를 차지하도록 설정 */
+    overflow-y: auto;
+  }
+
+  button {
+    font-size: 0.8rem; /* 작은 화면에서 버튼 글꼴 크기 축소 */
+    padding: 6px 10px; /* 패딩 축소 */
+  }
+}
