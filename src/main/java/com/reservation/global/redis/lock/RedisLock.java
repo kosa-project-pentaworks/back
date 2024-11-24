@@ -31,10 +31,8 @@ public class RedisLock {
         try {
             boolean available = lock.tryLock(10, 20, TimeUnit.SECONDS);
             if(!available) {
-                // 에러
-                System.out.println("에러??");
+                throw new RuntimeException();
             }
-            System.out.println("락킹 ==>> " + key);
             return hospitalReservationServiceWithLock.getLock(key);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

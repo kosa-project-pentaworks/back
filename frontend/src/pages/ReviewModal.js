@@ -23,9 +23,6 @@ const ReviewModal = ({ isOpen, onClose, hostReservation, userData }) => {
       hospId: hostReservation.hospId,
       providerId: userData.providerId,
     };
-    console.log("======>>> ", hospitalReviewInput.content);
-    console.log("======>>> ", hospitalReviewInput.rating);
-    console.log("======>>> ", hospitalReviewInput.hospitalReservationId);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/v1/hospitalreview/save`,
@@ -74,8 +71,7 @@ const ReviewModal = ({ isOpen, onClose, hostReservation, userData }) => {
         </div>
         <p>선택된 평점: {rating}점</p>
         {/* 리뷰 작성 영역 */}
-        <p>{hostReservation.hospReservationId}</p>
-        <p>{hostReservation.hospId}</p>
+
         <textarea
           placeholder={`"${hostReservation?.yadmNm}"에 대한 리뷰를 작성해주세요.`}
           value={review}

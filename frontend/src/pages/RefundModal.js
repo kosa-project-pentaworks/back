@@ -14,7 +14,7 @@ const RefundModal = ({ isOpen, onClose, hostReservation }) => {
       .then((response) => {
         if (response.data.data) {
           // 환불 성공
-          console.log("환불에 성공했습ㄴ;다.");
+          console.log("환불에 성공했습니다.");
         } else {
           // 환불 실패
         }
@@ -29,10 +29,6 @@ const RefundModal = ({ isOpen, onClose, hostReservation }) => {
           <p>"{hostReservation.yadmNm}" 예약에 대해 환불을 진행하시겠습니까?</p>
         )}
         <div style={{ marginTop: "20px" }}>
-          <button style={buttonStyle} onClick={onClose}>
-            닫기
-          </button>
-          <p>{hostReservation.hospitalReservationId} ???</p>
           <button
             style={{
               ...buttonStyle,
@@ -42,6 +38,9 @@ const RefundModal = ({ isOpen, onClose, hostReservation }) => {
             onClick={() => refund(hostReservation)}
           >
             환불 요청
+          </button>
+          <button style={buttonStyle} onClick={onClose}>
+            닫기
           </button>
         </div>
       </div>

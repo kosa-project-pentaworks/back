@@ -99,15 +99,18 @@ function HospitalReservationHistory() {
   return (
     <div>
       <div>
-        <ul style={{ listStyleType: "none", padding: 0 }}>
-          <li onClick={() => onReservation()}>예약 전체</li>
-          <li onClick={() => onReservation("1")}>현재 진행중인 예약</li>
-          <li onClick={() => onReservation("2")}>종료된 예약</li>
-          <li onClick={() => onReservation("3")}>취소한 예약</li>
-        </ul>
-      </div>
-      <div>
         <div>예약 내역</div>
+        <div>
+          <select
+            onChange={(e) => onReservation(e.target.value)}
+            style={{ padding: "0.5rem", fontSize: "1rem" }}
+          >
+            <option value="">예약 전체</option>
+            <option value="1">현재 진행중인 예약</option>
+            <option value="2">종료된 예약</option>
+            <option value="3">취소한 예약</option>
+          </select>
+        </div>
         <div className="container mt-4">
           <div className="hospitalContainer">
             {reservationList.hospitalReservationList.map((item) => (

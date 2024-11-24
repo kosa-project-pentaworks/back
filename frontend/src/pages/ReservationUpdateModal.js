@@ -3,7 +3,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/locale";
 import "react-datepicker/dist/react-datepicker.css";
-
+import "./ReservationUpdateModal.css";
 const ReservationUpdateModal = ({ isOpen, onClose, hostReservation }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -183,22 +183,26 @@ const modalContentStyle = {
   padding: "20px",
   borderRadius: "8px",
   textAlign: "center",
-  width: "400px",
+  width: "90%",
+  maxWidth: "500px",
+  height: "80vh", // 모달 높이 설정
+  overflowY: "auto", // 세로 스크롤 추가
+};
+
+const timeSlotButtonStyle = {
+  padding: "8px 12px", // 패딩을 줄여서 버튼 크기 줄임
+  border: "1px solid #ccc",
+  borderRadius: "4px",
+  cursor: "pointer",
+  fontSize: "0.85rem", // 버튼 글꼴 크기 축소
 };
 
 const timeSlotContainerStyle = {
   display: "flex",
   flexWrap: "wrap",
   justifyContent: "center",
-  gap: "10px",
+  gap: "8px", // 버튼 간의 간격 줄임
   margin: "10px 0",
-};
-
-const timeSlotButtonStyle = {
-  padding: "10px",
-  border: "1px solid #ccc",
-  borderRadius: "4px",
-  cursor: "pointer",
 };
 
 const selectedStyle = {
@@ -216,6 +220,10 @@ const buttonGroupStyle = {
   marginTop: "20px",
   display: "flex",
   justifyContent: "space-around",
+  position: "sticky", // 스크롤 하더라도 고정된 위치
+  bottom: "20px", // 하단에서의 거리
+  backgroundColor: "white", // 배경색을 설정하여 버튼이 겹치지 않도록 함
+  padding: "10px", // 여백 추가
 };
 
 const closeButtonStyle = {
