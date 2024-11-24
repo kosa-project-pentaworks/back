@@ -29,9 +29,9 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, userResponse.userId(), simpleGrantedAuthorities);
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (String) authentication.getCredentials();
+        return (Long) authentication.getCredentials();
     }
 
     public String getRole() {

@@ -1,10 +1,8 @@
 package com.reservation.user.repository;
 
 import com.reservation.global.exception.UserException;
-import com.reservation.user.domain.Address;
-import com.reservation.user.domain.SocialUserEntity;
-import com.reservation.user.domain.UserDto;
-import com.reservation.user.domain.UserEntity;
+import com.reservation.user.domain.*;
+import com.reservation.user.repository.grade.UserGradeRepository;
 import com.reservation.user.repository.port.DeleteUserPort;
 import com.reservation.user.repository.port.FetchUserPort;
 import com.reservation.user.repository.port.InsertUserPort;
@@ -25,6 +23,7 @@ public class UserRepository implements FetchUserPort, InsertUserPort, UpdateUser
 
     private final UserJpaRepository userJpaRepository;
     private final SocialUserJpaRepository socialUserJpaRepository;
+    private final UserGradeRepository userGradeRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,7 +36,6 @@ public class UserRepository implements FetchUserPort, InsertUserPort, UpdateUser
     @Transactional(readOnly = true)
     public UserDto getByEmail(String email) {
         Optional<UserDto> byEmail = findByEmail(email);
-
         if (byEmail.isEmpty()) {
             throw new UserException.UserDoesNotExistException();
         }
@@ -55,6 +53,8 @@ public class UserRepository implements FetchUserPort, InsertUserPort, UpdateUser
 
         SocialUserEntity socialUserEntity = userEntityOptional.get();
 
+        Optional<UserGrade> byUserId = userGradeRepository.findByUserId(socialUserEntity.getSocialUserId());
+
         return Optional.of(new UserDto(
                 socialUserEntity.getSocialUserId(),
                 socialUserEntity.getUsername(),
@@ -62,7 +62,9 @@ public class UserRepository implements FetchUserPort, InsertUserPort, UpdateUser
                 null,
                 socialUserEntity.getProvider(),
                 socialUserEntity.getProviderId(),
-                "null",
+                byUserId.orElse(UserGrade.newGrade(socialUserEntity.getSocialUserId(), GradeType.BASIC))
+                        .getGradeType()
+                        .toRole(),
                 socialUserEntity.getPhone(),
                 socialUserEntity.getAddress()
         ));
@@ -70,17 +72,26 @@ public class UserRepository implements FetchUserPort, InsertUserPort, UpdateUser
 
     @Override
     public UserDto create(CreateUser create) {
-        UserEntity user = UserEntity.toEntity(create);
-        return userJpaRepository.save(user)
-                .toDomain();
+        UserEntity userEntity = UserEntity.toEntity(create);
+        UserEntity savedUserEntity = userJpaRepository.save(userEntity);
+
+        userJpaRepository.flush();
+
+        userGradeRepository.create(savedUserEntity.getUserId(), GradeType.ADMIN);
+
+        return savedUserEntity.toDomain();
     }
 
     @Override
-    @Transactional
     public UserDto createSocialUser(String username, String provider, String providerId) {
         SocialUserEntity socialUserEntity = new SocialUserEntity(username, provider, providerId);
-        return socialUserJpaRepository.save(socialUserEntity)
-                .toDomain();
+        SocialUserEntity savedSocialUserEntity = socialUserJpaRepository.save(socialUserEntity);
+
+        socialUserJpaRepository.flush();
+
+        userGradeRepository.create(savedSocialUserEntity.getSocialUserId(), GradeType.BASIC);
+
+        return savedSocialUserEntity.toDomain();
     }
 
     @Override
