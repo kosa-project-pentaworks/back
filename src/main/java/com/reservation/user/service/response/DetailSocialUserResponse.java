@@ -10,6 +10,7 @@ public record DetailSocialUserResponse(
         String provider,
         String providerId,
         String phone,
-        Address address
+        Address address,
+        String role
 ) {
 }

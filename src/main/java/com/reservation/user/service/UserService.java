@@ -29,6 +29,8 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase, Modif
 
     private final KakaoUserPort kakaoUserPort;
 
+    private final UserGradeService userGradeService;
+
     @Override
     public UserRegistrationResponse register(UserRegistrationCommand request) {
         Optional<UserDto> byEmail = fetchUserPort.findByEmail(request.email());
@@ -75,7 +77,6 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase, Modif
     @Override
     public DetailUserResponse findDetailUserByEmail(String email) {
         Optional<UserDto> byEmail = fetchUserPort.findByEmail(email);
-
         if (byEmail.isEmpty()) {
             throw new UserException.UserDoesNotExistException();
         }
@@ -107,6 +108,7 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase, Modif
         }
 
         UserDto dto = byProviderId.get();
+        String role = userGradeService.findUserRoleByUserId(dto.getUserId());
 
         return DetailSocialUserResponse
                 .builder()
@@ -116,6 +118,7 @@ public class UserService implements RegisterUserUseCase, FetchUserUseCase, Modif
                 .providerId(dto.getProviderId())
                 .phone(dto.getPhone())
                 .address(dto.getAddress())
+                .role(role)
                 .build();
     }
 

@@ -42,7 +42,7 @@ function Login({setIsLoggedIn}) {
                 // 이후 페이지 이동 또는 로그인 처리 로직 추가
                 setIsLoggedIn(true)
 
-                window.location.href = `http://52.79.220.59:8090/admin/selectHospitalReservationListAll`;
+                navigate("/"); // 관리자 배포 주소로 수정
             } else {
                 setErrorMessage('로그인 실패: 사용자 정보가 일치하지 않습니다.');
             }
@@ -52,8 +52,8 @@ function Login({setIsLoggedIn}) {
         }
     };
 
-    const handleKakaoLogin = () => {
-        window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/kakao`;
+    const handleAdminSignup = () => {
+        navigate('/admin-signup');
     };
 
     return (
@@ -84,7 +84,7 @@ function Login({setIsLoggedIn}) {
                     </div>
                     <button type="submit" className="btn btn-primary w-100">로그인</button>
                 </form>
-                <button onClick={handleKakaoLogin} className="btn btn-warning w-100 mt-3">카카오로 로그인</button>
+                <button onClick={handleAdminSignup} className="btn btn-warning w-100 mt-3">회원가입</button>
             </div>
         </div>
     );

@@ -7,6 +7,7 @@ public record DetailUserResponse(
         Long userId,
         String username,
         String password,
-        String email
+        String email,
+        String role
 ) {
 }
