@@ -178,7 +178,6 @@ function MyPage() {
                             ? `${userInfo.address.street}, ${userInfo.address.city}, ${userInfo.address.state}, ${userInfo.address.zipCode}`
                             : "주소 없음"}
                     </p>
-                    <p>권한: {userInfo.role}</p> {/* 권한 정보 표시 */}
                     <button onClick={() => setEditMode(true)} className="btn btn-primary">
                         수정
                     </button>
