@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Link, Route, Routes, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import {BrowserRouter as Router, Link, Route, Routes, useLocation} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {jwtDecode} from "jwt-decode";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -16,38 +16,38 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
-  const [username, setUsername] = useState(""); // 로그인된 유저의 이름
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
+    const [username, setUsername] = useState(""); // 로그인된 유저의 이름
 
-  // 유저 정보 갱신 함수
-  const fetchUserInfo = async (token) => {
-    try {
-      const decodedToken = jwtDecode(token);
-      const providerId = decodedToken.userId;
+    // 유저 정보 갱신 함수
+    const fetchUserInfo = async (token) => {
+        try {
+            const decodedToken = jwtDecode(token);
+            const providerId = decodedToken.userId;
 
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/v1/user/${providerId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_URL}/v1/user/${providerId}`,
+                {
+                    headers: {Authorization: `Bearer ${token}`},
+                    withCredentials: true,
+                }
+            );
+
+            const userData = response.data.data || {};
+            setUsername(userData.username || "사용자");
+            setIsLoggedIn(true);
+        } catch (error) {
+            console.error("유저 정보 로드 실패:", error);
         }
-      );
+    };
 
-      const userData = response.data.data || {};
-      setUsername(userData.username || "사용자");
-      setIsLoggedIn(true);
-    } catch (error) {
-      console.error("유저 정보 로드 실패:", error);
-    }
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      fetchUserInfo(token);
-      setIsLoggedIn(true);
-    }
-  }, []);
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            fetchUserInfo(token);
+            setIsLoggedIn(true);
+        }
+    }, []);
 
     const handleLogout = async (e) => {
         e.preventDefault();
@@ -114,23 +114,23 @@ function App() {
         <Router>
             <div>
                 {/* 네비게이션 바 */}
-                <Navbar />
+                <Navbar/>
 
                 {/* 페이지 라우팅 */}
                 <div className="container mt-5">
                     <Routes>
-                        <Route path="/" element={<Main />} />
-                        <Route path="/admin-login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-                        <Route path="/admin-signup" element={<Signup />} />
+                        <Route path="/" element={<Main/>}/>
+                        <Route path="/admin-login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
+                        <Route path="/admin-signup" element={<Signup/>}/>
                         <Route
                             path="/login/oauth2/code/kakao"
-                            element={<KakaoAuthRedirect fetchUserInfo={fetchUserInfo} />}
+                            element={<KakaoAuthRedirect fetchUserInfo={fetchUserInfo}/>}
                         />
                         <Route
                             path="/dashboard"
                             element={
                                 <ProtectedRoute>
-                                    <Dashboard />
+                                    <Dashboard/>
                                 </ProtectedRoute>
                             }
                         />
@@ -138,7 +138,7 @@ function App() {
                             path="/hospitalReservationHistory"
                             element={
                                 <ProtectedRoute>
-                                    <HospitalReservationHistory />
+                                    <HospitalReservationHistory/>
                                 </ProtectedRoute>
                             }
                         />
@@ -146,7 +146,7 @@ function App() {
                             path="/mypage"
                             element={
                                 <ProtectedRoute>
-                                    <MyPage fetchUserInfo={fetchUserInfo} />
+                                    <MyPage fetchUserInfo={fetchUserInfo}/>
                                 </ProtectedRoute>
                             }
                         />
@@ -155,49 +155,6 @@ function App() {
             </div>
         </Router>
     );
-        {/* 페이지 라우팅 */}
-        <div className="container mt-5">
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route
-              path="/login"
-              element={<Login setIsLoggedIn={setIsLoggedIn} />}
-            />
-            <Route path="/signup" element={<Signup />} />
-            <Route
-              path="/login/oauth2/code/kakao"
-              element={<KakaoAuthRedirect fetchUserInfo={fetchUserInfo} />}
-            />
-
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/hospitalReservationHistory"
-              element={
-                <ProtectedRoute>
-                  <HospitalReservationHistory />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/mypage"
-              element={
-                <ProtectedRoute>
-                  <MyPage fetchUserInfo={fetchUserInfo} />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </div>
-      </div>
-    </Router>
-  );
 }
 
 export default App;
