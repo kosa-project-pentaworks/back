@@ -120,8 +120,8 @@ function App() {
                 <div className="container mt-5">
                     <Routes>
                         <Route path="/" element={<Main/>}/>
-                        <Route path="/admin-login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
-                        <Route path="/admin-signup" element={<Signup/>}/>
+                        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>}/>
+                        <Route path="/signup" element={<Signup/>}/>
                         <Route
                             path="/login/oauth2/code/kakao"
                             element={<KakaoAuthRedirect fetchUserInfo={fetchUserInfo}/>}
