@@ -73,6 +73,10 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation("org.apache.commons:commons-collections4:4.4")
 
+    // Swagger
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0"
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0'
+
     // Lombok for code generation
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

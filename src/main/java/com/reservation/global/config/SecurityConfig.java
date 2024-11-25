@@ -55,7 +55,12 @@ public class SecurityConfig {
                                 "/api/v1/hospitalreview",
                                 "/api/v1/hospitalreview/update",
                                 "/api/v1/hospitalreview/find",
-                                "/api/v1/data"
+                                "/api/v1/data",
+                                "/swagger-ui.html",          // Swagger UI HTML
+                                "/swagger-ui/**",            // Swagger 관련 리소스
+                                "/v3/api-docs/**",           // OpenAPI 명세
+                                "/swagger-resources/**",     // Swagger 리소스
+                                "/webjars/**"                // Webjars
                         ).permitAll()
                         .anyRequest().authenticated()
         );

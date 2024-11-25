@@ -75,7 +75,6 @@ public class AuthController {
         SocialUserResponse kakaoUser = fetchUserUseCase.findKakaoUser(tokenFromKakao);
 
         UserResponse byProviderId = fetchUserUseCase.findByProviderId(kakaoUser.providerId());
-
         if (ObjectUtils.isEmpty(byProviderId)) {
             registerUserUseCase.registerSocialUser(new SocialUserRegistrationCommand(
                     kakaoUser.name(),
