@@ -67,7 +67,7 @@ function App() {
     // 네비게이션 바 숨기기 조건 처리
     const Navbar = () => {
         const location = useLocation();
-        const hideNavbar = location.pathname === "/admin-login" || location.pathname === "/admin-signup";
+        const hideNavbar = location.pathname === "/login" || location.pathname === "/signup";
 
         if (hideNavbar) return null;
 
