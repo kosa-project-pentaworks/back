@@ -23,6 +23,7 @@ public class HospitalsPageResponse {
         this.next = next;
         this.hospitals = hospitals;
     }
+
     public int nowPage(int number){
         return number + 1;
     }

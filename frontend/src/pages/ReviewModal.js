@@ -1,18 +1,19 @@
 import axios from "axios";
 import React, { useState } from "react";
+import "./ReviewModal.css";
 
 const ReviewModal = ({ isOpen, onClose, hostReservation, userData }) => {
-  const [rating, setRating] = useState(1); // 별점 상태
-  const [review, setReview] = useState(""); // 리뷰 내용 상태
+  const [rating, setRating] = useState(1);
+  const [review, setReview] = useState("");
 
-  if (!isOpen) return null; // 모달이 열리지 않았을 경우 아무것도 렌더링하지 않음
+  if (!isOpen) return null;
 
   const handleRatingClick = (value) => {
-    setRating(value); // 별점 업데이트
+    setRating(value);
   };
 
   const handleReviewChange = (e) => {
-    setReview(e.target.value); // 리뷰 텍스트 업데이트
+    setReview(e.target.value);
   };
 
   const handleSubmit = () => {
@@ -23,45 +24,45 @@ const ReviewModal = ({ isOpen, onClose, hostReservation, userData }) => {
       hospId: hostReservation.hospId,
       providerId: userData.providerId,
     };
+
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/v1/hospitalreview/save`,
         hospitalReviewInput,
         {
-          headers: { Authorization: `Bearer ${userData.token}` }, // 인증 헤더 추가
-          withCredentials: true, // CORS 인증 설정
+          headers: { Authorization: `Bearer ${userData.token}` },
+          withCredentials: true,
         }
       )
       .then((response) => {
-        if (response.data.data) {
-        }
+        onClose();
+        window.location.reload();
+      })
+      .catch((error) => {
+        // 에러 처리를 추가할 수 있습니다
       });
-    onClose(); // 모달 닫기
   };
 
   return (
-    <div style={modalOverlayStyle}>
-      <div style={modalStyle}>
-        <h2>리뷰 작성</h2>
-        <p>{`"${hostReservation?.yadmNm}"에 대한 평점과 리뷰를 작성해주세요.`}</p>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "10px",
-          }}
-        >
+    <div className="review-modal-overlay">
+      <div className="review-modal-content">
+        <h2 className="review-modal-title">리뷰 작성</h2>
+        <p className="review-modal-subtitle">
+          <span className="review-hospital-name">
+            {hostReservation?.yadmNm}
+          </span>
+          에 대한 평점과 리뷰를 작성해주세요.
+        </p>
+
+        <div className="rating-stars-container">
           {Array.from({ length: 5 }, (_, index) => {
             const starValue = index + 1;
             return (
               <span
                 key={index}
-                style={{
-                  fontSize: "24px",
-                  color: starValue <= rating ? "#FFD700" : "#C0C0C0",
-                  cursor: "pointer",
-                  marginRight: "5px",
-                }}
+                className={`rating-star ${
+                  starValue <= rating ? "filled" : "empty"
+                }`}
                 onClick={() => handleRatingClick(starValue)}
               >
                 ★
@@ -69,74 +70,26 @@ const ReviewModal = ({ isOpen, onClose, hostReservation, userData }) => {
             );
           })}
         </div>
-        <p>선택된 평점: {rating}점</p>
-        {/* 리뷰 작성 영역 */}
+        <p className="rating-text">선택된 평점: {rating}점</p>
 
         <textarea
-          placeholder={`"${hostReservation?.yadmNm}"에 대한 리뷰를 작성해주세요.`}
+          className="review-textarea"
+          placeholder={`${hostReservation?.yadmNm}에 대한 리뷰를 작성해주세요.`}
           value={review}
           onChange={handleReviewChange}
-          style={textareaStyle}
-        ></textarea>
-        <div style={{ marginTop: "10px" }}>
-          <button onClick={onClose} style={closeButtonStyle}>
-            닫기
+        />
+
+        <div className="button-container">
+          <button className="button cancel-button" onClick={onClose}>
+            취소
           </button>
-          <button onClick={handleSubmit} style={submitButtonStyle}>
+          <button className="button submit-button" onClick={handleSubmit}>
             작성
           </button>
         </div>
       </div>
     </div>
   );
-};
-
-// 스타일
-const modalOverlayStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 1000,
-};
-
-const modalStyle = {
-  backgroundColor: "white",
-  padding: "20px",
-  borderRadius: "8px",
-  textAlign: "center",
-  width: "300px",
-};
-
-const textareaStyle = {
-  width: "100%",
-  height: "100px",
-  marginBottom: "10px",
-  resize: "none",
-};
-
-const closeButtonStyle = {
-  padding: "10px 20px",
-  backgroundColor: "#007BFF",
-  color: "white",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-  marginRight: "10px",
-};
-
-const submitButtonStyle = {
-  padding: "10px 20px",
-  backgroundColor: "#28A745",
-  color: "white",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
 };
 
 export default ReviewModal;

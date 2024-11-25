@@ -2,21 +2,30 @@ package com.reservation.hospitals.repository.custom;
 
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.reservation.hospitalReviews.domain.QHospitalReviewEntity;
 import com.reservation.hospitals.domain.HospStatus;
 
+import com.reservation.hospitals.domain.HospitalEntity;
 import com.reservation.hospitals.domain.QHospitalAdmin;
 import com.reservation.hospitals.domain.dto.HospitalSearchDto;
+import com.reservation.user.domain.SocialUserEntity;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.reservation.hospitalReviews.domain.QHospitalReviewEntity.hospitalReviewEntity;
 import static com.reservation.hospitals.domain.QHospitalAdmin.hospitalAdmin;
@@ -27,7 +36,6 @@ import static com.reservation.hospitals.domain.QHospitalEntity.*;
 @RequiredArgsConstructor
 public class HospitalRepositoryImpl implements HospitalRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
-
 
     @Override
     public PageImpl<HospitalSearchDto> findHospitalAll(String sidoCdNm, String sgguCdNm, String keyword, Pageable pageable) {
@@ -43,6 +51,8 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom{
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetchResults();
+
+
 
         List<HospitalSearchDto> hospitalSearchList = jpaQueryFactory
             .select(Projections.constructor(HospitalSearchDto.class,
@@ -60,6 +70,9 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom{
                 hospitalEntity.yadmNm,
                 hospitalEntity.telno)
             .fetch();
+
+
+
         return new PageImpl<>(hospitalSearchList, pageable, hospitalIds.getTotal());
     }
 

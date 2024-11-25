@@ -33,10 +33,11 @@ public class HospitalReviewController {
     }
 
     @PostMapping("/api/v1/hospitalreview/update")
-    public void updateReview(
+    public CustomApiResponse<Boolean> updateReview(
         @RequestBody HospitalReviewUpdateInputRequest hospitalReviewUpdateInput
         ){
         hospitalReviewService.updateHospitalReview(hospitalReviewUpdateInput);
+        return CustomApiResponse.ok(true);
     }
 
     @GetMapping("/api/v1/hospitalreview/find")

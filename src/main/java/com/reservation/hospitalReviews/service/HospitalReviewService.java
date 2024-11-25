@@ -3,6 +3,10 @@ package com.reservation.hospitalReviews.service;
 import com.reservation.HospitalReservation.domain.HospitalReservationEntity;
 import com.reservation.HospitalReservation.domain.ReservationStatus;
 import com.reservation.HospitalReservation.repository.HospitalReservationRepository;
+import com.reservation.global.exception.HospitalException;
+import com.reservation.global.exception.HospitalReservationException;
+import com.reservation.global.exception.HospitalReviewException;
+import com.reservation.global.exception.UserException;
 import com.reservation.hospitalReviews.controller.requerst.HospitalReviewInputRequest;
 import com.reservation.hospitalReviews.controller.requerst.HospitalReviewUpdateInputRequest;
 import com.reservation.hospitalReviews.domain.HospitalReviewEntity;
@@ -39,12 +43,12 @@ public class HospitalReviewService {
     @Transactional
     public void saveHospitalReview(HospitalReviewInputRequest hospitalReviewInput){
         SocialUserEntity user = userJpaRepository.findByProviderId(hospitalReviewInput.getProviderId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(UserException.UserDoesNotExistException::new);
         HospitalEntity hospital = hospitalRepository.findById(hospitalReviewInput.getHospId())
-            .orElseThrow(() -> new RuntimeException("Hospital not found"));
+            .orElseThrow(HospitalException.HospitalDoesNotExitException::new);
         HospitalReservationEntity findReservation = hospitalReservationRepository
             .findById(hospitalReviewInput.getHospitalReservationId())
-            .orElseThrow(() -> new RuntimeException("Reservation not found"));
+            .orElseThrow(HospitalReservationException.HospitalReservationDoesNotExit::new);
 
         findReservation.updateStatus(ReservationStatus.END);
         HospitalReviewEntity hospitalReview = HospitalReviewEntity.save(hospitalReviewInput, user, hospital, findReservation);
@@ -52,13 +56,14 @@ public class HospitalReviewService {
     }
 
     public FindOneHospitalReviewResponse findOneHospitalReviewByHospitalReviewId(Long hospitalReviewId){
-        Optional<HospitalReviewEntity> findHospitalReview = hospitalReviewRepository.findById(hospitalReviewId);
-        return FindOneHospitalReviewResponse.findOne(findHospitalReview.get());
+        HospitalReviewEntity findHospitalReview = hospitalReviewRepository.findById(hospitalReviewId)
+            .orElseThrow(HospitalReviewException.HospitalReviewDoesNotExit::new);
+        return FindOneHospitalReviewResponse.findOne(findHospitalReview);
     }
     @Transactional
     public void updateHospitalReview(HospitalReviewUpdateInputRequest hospitalReviewUpdateInput){
         HospitalReviewEntity findHospitalReview = hospitalReviewRepository.findById(hospitalReviewUpdateInput.getHospReviewId())
-            .orElseThrow(() -> new RuntimeException("Review not found"));
+            .orElseThrow(HospitalReviewException.HospitalReviewDoesNotExit::new);
         findHospitalReview.update(hospitalReviewUpdateInput);
     }
 

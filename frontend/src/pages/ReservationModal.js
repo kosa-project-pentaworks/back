@@ -1,4 +1,3 @@
-// ReservationModal.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
@@ -6,23 +5,67 @@ import { ko } from "date-fns/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import "./ReservationModal.css";
 import { useNavigate } from "react-router-dom";
-import ReviewModal from "./ReviewModal";
 import { jwtDecode } from "jwt-decode";
+
+// CustomAlert 컴포넌트
+const CustomAlert = ({ message, type }) => {
+  return (
+    <div className="alert-overlay">
+      <div className={`alert-container alert-${type}`}>
+        <span className="alert-icon">
+          {type === "success" ? "✓" : type === "warning" ? "!" : "✕"}
+        </span>
+        <span className="alert-message">{message}</span>
+      </div>
+    </div>
+  );
+};
+
+// CustomConfirm 컴포넌트
+const CustomConfirm = ({ message, onConfirm, onCancel }) => {
+  return (
+    <div className="confirm-overlay">
+      <div className="confirm-container">
+        <h3 className="confirm-title">예약 확인</h3>
+        <p className="confirm-message">{message}</p>
+        <div className="confirm-buttons">
+          <button className="confirm-button confirm-cancel" onClick={onCancel}>
+            취소
+          </button>
+          <button className="confirm-button confirm-ok" onClick={onConfirm}>
+            확인
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [reservationTimes, setReservationTimes] = useState([]);
-  const [providerId, setProviderId] = useState({
-    id: "",
-  });
+  const [providerId, setProviderId] = useState({ id: "" });
+  const [alert, setAlert] = useState({ show: false, message: "", type: "" });
+  const [showConfirm, setShowConfirm] = useState(false);
   const token = localStorage.getItem("token");
+  let redisKey = "";
+
   useEffect(() => {
     if (isOpen) {
       setProviderId({ id: jwtDecode(token).userId });
     }
   }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const showAlert = (message, type) => {
+    setAlert({ show: true, message, type });
+    setTimeout(() => {
+      setAlert({ show: false, message: "", type: "" });
+    }, 2000);
+  };
 
   const convertDate = (date) => {
     const offsetDate = new Date(
@@ -32,10 +75,6 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
     return formattedDate;
   };
 
-  let redisKey = "";
-  if (!isOpen) return null;
-
-  // 예약 가능한 시간대를 설정합니다 (9:00부터 17:30까지 30분 단위로 설정, 단 12:00부터 13:00시는 제외)
   const availableTimes = [
     "09:00",
     "09:30",
@@ -54,44 +93,58 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
     "17:00",
     "17:30",
   ];
+
+  const isTimeDisabled = (time) => {
+    if (!selectedDate) return true;
+
+    const today = new Date();
+    const selectedDay = new Date(selectedDate);
+
+    if (
+      selectedDay.getDate() === today.getDate() &&
+      selectedDay.getMonth() === today.getMonth() &&
+      selectedDay.getFullYear() === today.getFullYear()
+    ) {
+      const [hours, minutes] = time.split(":").map(Number);
+      const currentHours = today.getHours();
+      const currentMinutes = today.getMinutes();
+
+      return (
+        currentHours > hours ||
+        (currentHours === hours && currentMinutes > minutes)
+      );
+    }
+
+    return false;
+  };
+
   const getReservation = async (formattedDate) => {
-    await axios
-      .get(
+    try {
+      const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/v1/hospitalreservation?reservationAt=${formattedDate}&hospId=${selectedHospital.hospId}`
-      )
-      .then((response) => {
-        if (response.data.success) {
-          const newReservationTime = [];
-          response.data.data.forEach((item) => {
-            newReservationTime.push(item.reservationTime);
-          });
-          setReservationTimes([...newReservationTime]);
-        }
-      });
+      );
+      if (response.data.success) {
+        const newReservationTime = response.data.data.map(
+          (item) => item.reservationTime
+        );
+        setReservationTimes(newReservationTime);
+      }
+    } catch (error) {
+      showAlert("예약 정보를 불러오는데 실패했습니다.", "error");
+    }
   };
 
   const handleReservation = () => {
     if (!selectedDate || !selectedTime) {
-      alert("예약 날짜와 시간을 선택해주세요.");
+      showAlert("예약 날짜와 시간을 선택해주세요.", "warning");
       return;
     }
+    setShowConfirm(true);
+  };
 
-    const reservationData = {
-      hospitalId: selectedHospital.hospId,
-      date: `${selectedDate.toISOString().split("T")[0]} ${selectedTime}`,
-    };
-
-    if (window.confirm(reservationData.date + " 결제하시겠습니까?")) {
-      // 확인을 누른 경우 실행할 코드
-      console.log("결제를 진행합니다.");
-      createReservation();
-
-      // 결제 함수 호출 또는 결제 관련 처리
-    } else {
-      // 취소를 누른 경우 실행할 코드
-      console.log("결제를 취소합니다.");
-      // 취소 관련 처리
-    }
+  const handleConfirm = () => {
+    setShowConfirm(false);
+    createReservation();
   };
 
   const createReservation = () => {
@@ -101,6 +154,7 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
       reservationAt: selctConvertDate,
       reservationTime: selectedTime,
     };
+
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/v1/hospitalreservation`,
@@ -108,21 +162,20 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
       )
       .then((response) => {
         if (!response.data.data.isvalid) {
-          // 중복되는 예약이 없다.
           redisKey = response.data.data.redisKey;
           requestPay(redisKey);
         } else {
-          alert("결제에 실패했습니다. 다시 부탁드립니다.", redisKey);
+          showAlert("결제에 실패했습니다. 다시 시도해주세요.", "error");
         }
       })
       .catch((error) => {
-        console.error("예약 실패:???", error);
-        // 에러 처리 코드
+        showAlert("진행 중인 결제가 있습니다. 다시 시도해주세요.", "error");
       });
   };
-  function requestPay(redisKey) {
+
+  const requestPay = (redisKey) => {
     if (!window.IMP) {
-      console.error("아임포트 라이브러리가 로드되지 않았습니다.");
+      showAlert("결제 모듈을 불러오는데 실패했습니다.", "error");
       return;
     }
 
@@ -154,86 +207,107 @@ const ReservationModal = ({ isOpen, onClose, selectedHospital }) => {
               `${process.env.REACT_APP_API_URL}/v1/payment`,
               detailPayment,
               {
-                headers: { Authorization: `Bearer ${token}` }, // 인증 헤더 추가
-                withCredentials: true, // CORS 인증 설정
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
               }
             )
             .then((response) => {
-              console.log(response);
-              navigate("/hospitalReservationHistory");
+              showAlert("예약이 완료되었습니다.", "success");
+              setTimeout(() => {
+                navigate("/hospitalReservationHistory");
+              }, 2000);
+            })
+            .catch(() => {
+              showAlert("예약 처리 중 오류가 발생했습니다.", "error");
             });
         } else {
-          axios
-            .post(
-              `${process.env.REACT_APP_API_URL}/v1/payment/redisremove`,
-              redisKey,
-              {
-                headers: {
-                  "Content-Type": "text/plain",
-                },
-              }
-            )
-            .then((response) => {});
-          console.error("결제 실패", rsp.error_msg);
+          axios.post(
+            `${process.env.REACT_APP_API_URL}/v1/payment/redisremove`,
+            redisKey,
+            {
+              headers: {
+                "Content-Type": "text/plain",
+              },
+            }
+          );
+          showAlert("결제가 취소되었습니다.", "warning");
         }
       }
     );
-  }
+  };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>{selectedHospital.yadmNm} 예약하기</h2>
+    <>
+      {alert.show && <CustomAlert message={alert.message} type={alert.type} />}
+      {showConfirm && (
+        <CustomConfirm
+          message={`${
+            selectedDate.toISOString().split("T")[0]
+          } ${selectedTime}에 예약하시겠습니까?`}
+          onConfirm={handleConfirm}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>날짜와 시간을 선택해 주세요</h2>
 
-        {/* Step 1: Date Selection */}
-        <div className="datepicker-container">
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => {
-              const offsetDate = new Date(
-                date.getTime() - date.getTimezoneOffset() * 60000
-              );
-              const formattedDate = offsetDate.toISOString().split("T")[0];
-              getReservation(formattedDate);
-              setSelectedDate(date);
-              setSelectedTime(null); // Reset the time selection when the date changes
-            }}
-            inline
-            minDate={new Date()} // 오늘 이후 날짜만 선택 가능
-            locale={ko}
-            dateFormat="yyyy년 MM월 dd일"
-          />
-        </div>
-
-        {/* Step 2: Time Selection (only if date is selected) */}
-        {selectedDate && (
-          <div className="timepicker-container">
-            <h3>시간 선택</h3>
-            <div className="time-slots">
-              {availableTimes.map((time) => (
-                <button
-                  key={time}
-                  className={`time-slot-button ${
-                    selectedTime === time ? "selected" : ""
-                  } ${reservationTimes.includes(time) ? "disabled" : ""}`}
-                  onClick={() =>
-                    !reservationTimes.includes(time) && setSelectedTime(time)
-                  }
-                  disabled={reservationTimes.includes(time)}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
+          <div className="datepicker-container">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => {
+                const offsetDate = new Date(
+                  date.getTime() - date.getTimezoneOffset() * 60000
+                );
+                const formattedDate = offsetDate.toISOString().split("T")[0];
+                getReservation(formattedDate);
+                setSelectedDate(date);
+                setSelectedTime(null);
+              }}
+              inline
+              minDate={new Date()}
+              locale={ko}
+              dateFormat="yyyy년 MM월 dd일"
+            />
           </div>
-        )}
 
-        <div className="button-group">
-          <button onClick={onClose}>닫기</button>
-          <button onClick={handleReservation}>예약하기</button>
+          {selectedDate && (
+            <div className="timepicker-container">
+              <h3>시간 선택</h3>
+              <div className="time-slots">
+                {availableTimes.map((time) => (
+                  <button
+                    key={time}
+                    className={`time-slot-button ${
+                      selectedTime === time ? "selected" : ""
+                    } ${
+                      reservationTimes.includes(time) || isTimeDisabled(time)
+                        ? "disabled"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      !reservationTimes.includes(time) &&
+                      !isTimeDisabled(time) &&
+                      setSelectedTime(time)
+                    }
+                    disabled={
+                      reservationTimes.includes(time) || isTimeDisabled(time)
+                    }
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="button-group">
+            <button onClick={onClose}>닫기</button>
+            <button onClick={handleReservation}>예약하기</button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -28,6 +28,7 @@ public class HospitalReservationReader implements ItemStreamReader<HospitalReser
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
         LocalDate newDate = LocalDate.now();
+        newDate = newDate.plusDays(1);
         List<HospitalReservationEntity> hospitalReservationList = hospitalReservationRepository.findAllByReservationAt(newDate);
         this.hospitalReservationIterator = hospitalReservationList.iterator();
 

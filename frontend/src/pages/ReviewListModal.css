@@ -1,9 +1,62 @@
+/* 모달 오버레이 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 내용 스타일링 */
+.modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 90%;
+  max-width: 600px;
+}
+
+/* 스크롤바 스타일링 */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
 .review-box {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px; /* 12px에서 8px로 축소 */
+  padding: 12px; /* 20px에서 12px로 축소 */
+  margin-bottom: 12px; /* 16px에서 12px로 축소 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* 그림자도 살짝 줄임 */
+  transition: all 0.2s ease;
+}
+
+.review-box:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .review-box ul {
@@ -13,7 +66,9 @@
 }
 
 .review-box ul li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  color: #4a5568;
+  line-height: 1.6;
 }
 
 .review-box ul li:last-child {
@@ -21,31 +76,151 @@
 }
 
 .review-box ul li:first-child {
-  font-weight: bold;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
 }
 
+/* 제목과 헤더 스타일 */
 .highlight {
-  font-weight: bold; /* 굵게 */
-  font-size: 1em; /* 텍스트 크기 확대 */
+  font-weight: 600;
+  font-size: 1.2em;
+  color: #2d3748;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
 }
 
 .title {
-  display: flex; /* Flexbox to make items arranged horizontally */
-  align-items: center; /* Vertically centers the items */
-  gap: 1rem; /* Adds space between the elements */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 1rem;
+  justify-content: space-between;
 }
 
 .top {
-  display: flex; /* Makes the div a flex container */
-  align-items: center; /* Vertically center align items */
-  justify-content: space-between; /* Pushes the elements to the opposite ends */
-  padding: 0.5rem; /* Optional: add padding for better appearance */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
 }
 
+.top p {
+  font-weight: 200;
+  font-size: 1.2rem;
+  color: #2d3748;
+  margin: 0;
+}
+
+/* 닫기 버튼 스타일 */
 .modal-close {
-  background: none; /* Removes default button styling */
-  border: none; /* Removes button border */
-  font-size: 1.5rem; /* Makes the close button larger */
-  cursor: pointer; /* Changes cursor to pointer to indicate it's clickable */
-  margin-left: auto; /* Pushes the button to the right */
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+.star {
+  font-size: 0.8em; /* 또는 더 작은 값 */
+  margin-right: 1px;
+  display: inline-block;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.star.empty {
+  color: #c0c0c0;
+}
+
+.stars-container {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+/* 페이지네이션 */
+.pagenav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-top: 1rem;
+  padding: 1rem 0;
+}
+
+.pagenav button {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: white;
+  color: #4a5568;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagenav button:hover {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.pagenav button.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .review-box {
+    padding: 16px;
+  }
+
+  .title {
+    padding: 0.75rem 0;
+  }
+
+  .top {
+    padding: 0.75rem;
+  }
+
+  .modal-close {
+    font-size: 1.25rem;
+    width: 28px;
+    height: 28px;
+  }
+
+  .highlight {
+    font-size: 1.1em;
+  }
+
+  .pagenav button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
 }

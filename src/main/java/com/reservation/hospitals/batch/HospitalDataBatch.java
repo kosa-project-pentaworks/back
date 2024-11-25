@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.LocalDateTime;
+
 @Configuration
 @RequiredArgsConstructor
 public class HospitalDataBatch {
@@ -27,6 +29,8 @@ public class HospitalDataBatch {
 
     @Bean
     public Job hospitalDataJob(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        System.out.println("배치시간==>> " + localDateTime);
         return new JobBuilder("hospitalDataJob", jobRepository)
             .start(hospitalDataStep())
             .build();

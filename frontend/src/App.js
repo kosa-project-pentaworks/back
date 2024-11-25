@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Link,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
@@ -108,7 +114,8 @@ function App() {
         {/* 페이지 라우팅 */}
         <div className="container mt-5">
           <Routes>
-            <Route path="/" element={<Main />} />
+            {/* <Route path="/" element={<Main />} /> */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route
               path="/login"
               element={<Login setIsLoggedIn={setIsLoggedIn} />}

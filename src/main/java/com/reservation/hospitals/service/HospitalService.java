@@ -18,14 +18,14 @@ public class HospitalService {
 
     public HospitalsPageResponse searchHospital(String sidoCdNm, String sgguCdNm ,String keyWord, int size, int page){
         Pageable pageable = PageRequest.of(page - 1, size);
-        PageImpl<HospitalSearchDto> aa = hospitalRepository.findHospitalAll(sidoCdNm,sgguCdNm,keyWord,pageable);
+        PageImpl<HospitalSearchDto> hospitalPage = hospitalRepository.findHospitalAll(sidoCdNm,sgguCdNm,keyWord,pageable);
 
         return HospitalsPageResponse.builder()
-            .number(aa.getNumber())
-            .previous(aa.hasPrevious())
-            .totalPage(aa.getTotalPages())
-            .next(aa.hasNext())
-            .hospitals(aa.getContent())
+            .number(hospitalPage.getNumber())
+            .previous(hospitalPage.hasPrevious())
+            .totalPage(hospitalPage.getTotalPages())
+            .next(hospitalPage.hasNext())
+            .hospitals(hospitalPage.getContent())
             .build();
     }
 }
