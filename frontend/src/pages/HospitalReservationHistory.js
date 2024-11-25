@@ -27,14 +27,27 @@ function HospitalReservationHistory() {
     providerId: providerId,
   };
 
+  const [img, setImg] = useState([]);
+  const [selectPage, setSelectPage] = useState(1);
+
+  useEffect(() => {
+    const arr = [];
+    for (let i = 0; i < 10; i++) {
+      arr.push(5);
+      arr.push(9);
+      // arr.push(Math.floor(Math.random() * 18) + 1);
+    }
+    setImg(arr);
+  }, [reservationList]);
+
   useEffect(() => {
     myReservation();
-  }, []);
+  }, [selectPage]);
 
   const myReservation = (type) => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/v1/hospitalreservation/list?type=${type}&providerId=${providerId}`,
+        `${process.env.REACT_APP_API_URL}/v1/hospitalreservation/list?type=${type}&providerId=${providerId}&page=${selectPage}`,
         {
           headers: { Authorization: `Bearer ${token}` }, // 인증 헤더 추가
           withCredentials: true, // CORS 인증 설정
@@ -63,6 +76,9 @@ function HospitalReservationHistory() {
     setSelectReviewUpdateModal(true);
     setReservation(reservation);
   };
+  const onClickSelectPage = (page) => {
+    setSelectPage(page);
+  };
 
   const pageNums = [];
   const pageNum = (Math.floor((reservationList.number - 1) / 5) + 1) * 5;
@@ -78,7 +94,6 @@ function HospitalReservationHistory() {
     }
   }
   const onReservation = (type) => {
-    console.log("on");
     searchReservation(type);
   };
 
@@ -113,7 +128,7 @@ function HospitalReservationHistory() {
         </div>
         <div className="container mt-4">
           <div className="hospitalContainer">
-            {reservationList.hospitalReservationList.map((item) => (
+            {reservationList.hospitalReservationList.map((item, idx) => (
               <div className="hospitalList">
                 <div className="hospitalInfo">
                   <ul style={{ listStyleType: "none", padding: 0 }}>
@@ -133,7 +148,7 @@ function HospitalReservationHistory() {
                         예약시간 {item.reservationAt} {item.reservationTime}
                       </span>
 
-                      {item.reservationStatus === "PENDING" ? (
+                      {item.reservationStatus === "PENDING" && (
                         <div className="button-container">
                           <button
                             onClick={() =>
@@ -150,36 +165,34 @@ function HospitalReservationHistory() {
                             환불하기
                           </button>
                         </div>
-                      ) : null}
-                      {item.reservationStatus === "SUCCESS" ? (
-                        <div>
+                      )}
+                      {item.reservationStatus === "SUCCESS" && (
+                        <div className="button-container">
                           <button onClick={() => handleReviewModalClick(item)}>
                             리뷰작성
                           </button>
                         </div>
-                      ) : null}
-                      {item.reservationStatus === "END" ? (
-                        <div>
+                      )}
+                      {item.reservationStatus === "END" && (
+                        <div className="button-container">
                           <button
                             onClick={() => handleReviewUpdateModalClick(item)}
                           >
                             리뷰수정
                           </button>
                         </div>
-                      ) : null}
-                      {item.reservationStatus === "CANCEL" ? (
+                      )}
+                      {item.reservationStatus === "CANCEL" && (
                         <div>
                           <p>결제 취소</p>
                         </div>
-                      ) : null}
+                      )}
                     </div>
                   </ul>
                 </div>
                 <div className="hospitalImage">
                   <img
-                    src={`/hospitalImage/hosp${
-                      Math.floor(Math.random() * 18) + 1
-                    }.jpg`}
+                    src={`/hospitalImage/hosp${img[idx]}.jpg`}
                     alt="Hospital"
                   />
                 </div>
@@ -189,7 +202,7 @@ function HospitalReservationHistory() {
           <div className="pagenav">
             {reservationList.previous ? (
               <button
-              // onClick={() => onClickSelectPage(hospitalPages.number - 1)}
+                onClick={() => onClickSelectPage(reservationList.number - 1)}
               >
                 이전
               </button>
@@ -197,7 +210,7 @@ function HospitalReservationHistory() {
             {pageNums.map((item) => (
               <button
                 key={item}
-                // onClick={() => onClickSelectPage(item)}
+                onClick={() => onClickSelectPage(item)}
                 style={{
                   backgroundColor:
                     reservationList.number === item ? "#007bff" : "transparent", // 현재 페이지일 경우 강조
@@ -214,7 +227,7 @@ function HospitalReservationHistory() {
             ))}
             {reservationList.next ? (
               <button
-              // onClick={() => onClickSelectPage(hospitalPages.number + 1)}
+                onClick={() => onClickSelectPage(reservationList.number + 1)}
               >
                 다음
               </button>

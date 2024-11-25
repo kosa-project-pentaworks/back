@@ -49,6 +49,10 @@ function ReviewListModal({ isOpen, onClose, hospital }) {
         setFindReviews({ ...response.data.data });
       });
   };
+  if (hospital.reviewCount === 0) {
+    onClose(); // 모달 닫기
+    return null;
+  }
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
@@ -78,16 +82,9 @@ function ReviewListModal({ isOpen, onClose, hospital }) {
                   return (
                     <span
                       key={index}
-                      style={{
-                        fontSize: "24px",
-                        color:
-                          starValue <= item.hospReviewRating
-                            ? "#FFD700"
-                            : "#C0C0C0",
-                        // cursor: "pointer",
-                        marginRight: "5px",
-                      }}
-                      // onClick={() => handleRatingClick(starValue)}
+                      className={`star ${
+                        starValue <= item.hospReviewRating ? "filled" : "empty"
+                      }`}
                     >
                       ★
                     </span>

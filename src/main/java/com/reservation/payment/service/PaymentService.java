@@ -5,6 +5,9 @@ import com.reservation.HospitalReservation.domain.ReservationStatus;
 import com.reservation.HospitalReservation.repository.HospitalReservationRepository;
 import com.reservation.HospitalReservation.repository.custom.dto.FindOneHospitalReservationPaymentDto;
 import com.reservation.HospitalReservation.service.HospitalReservationService;
+import com.reservation.global.exception.HospitalException;
+import com.reservation.global.exception.HospitalReviewException;
+import com.reservation.global.exception.UserException;
 import com.reservation.global.redis.client.ApplicationLockClient;
 import com.reservation.hospitals.domain.HospitalEntity;
 import com.reservation.hospitals.repository.HospitalRepository;
@@ -53,17 +56,19 @@ public class PaymentService {
                 releaseLock(createPaymentRequest.getRedisKey());
             }
         });
-        Optional<HospitalEntity> isValidHospital = hospitalRepository.findById(createPaymentRequest.getHospId());
-        Optional<SocialUserEntity> isValidUser = socialUserJpaRepository.findByProviderId(createPaymentRequest.getProviderId());
+        HospitalEntity isValidHospital = hospitalRepository.findById(createPaymentRequest.getHospId())
+            .orElseThrow(HospitalException.HospitalDoesNotExitException::new);
+        SocialUserEntity isValidUser = socialUserJpaRepository.findByProviderId(createPaymentRequest.getProviderId())
+            .orElseThrow(UserException.UserDoesNotExistException::new);
         // 결제 유저, 병원 있는지 체크
-        if(isValidUser.isPresent() && isValidHospital.isPresent()){
-            PaymentEntity payment = PaymentEntity.from(createPaymentRequest, isValidHospital.get(), isValidUser.get());
+
+            PaymentEntity payment = PaymentEntity.from(createPaymentRequest, isValidHospital, isValidUser);
             PaymentEntity createdPayment = paymentRepository.save(payment);
             // 결제정보를 저장되었는지
-            HospitalReservationEntity hospitalReservation = HospitalReservationEntity.from(createPaymentRequest, isValidUser.get(), isValidHospital.get(), createdPayment);
-            hospitalReservationService.createReservation(hospitalReservation);
-        }
-        return false;
+            HospitalReservationEntity hospitalReservation = HospitalReservationEntity.from(createPaymentRequest, isValidUser, isValidHospital, createdPayment);
+            Boolean result = hospitalReservationService.createReservation(hospitalReservation);
+        if(!result) throw new HospitalReviewException.HospitalReviewDoesNotExit();
+        return true;
     }
     public void releaseLock(String releaseLockKey){
         applicationLockClient.remove(releaseLockKey);

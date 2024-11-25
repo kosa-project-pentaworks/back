@@ -8,6 +8,7 @@ import com.reservation.HospitalReservation.repository.custom.dto.FindHospitalRes
 import com.reservation.HospitalReservation.repository.custom.dto.FindOneHospitalReservationPaymentDto;
 import com.reservation.HospitalReservation.service.HospitalReservationResponse.HospitalReservationPageResponse;
 import com.reservation.HospitalReservation.service.HospitalReservationResponse.ReservationIsvalidAndLockResponse;
+import com.reservation.global.exception.RedisException;
 import com.reservation.global.redis.client.ApplicationLockClient;
 import com.reservation.global.redis.lock.RedisLock;
 import com.reservation.payment.domain.PaymentEntity;
@@ -35,10 +36,12 @@ public class HospitalReservationService {
         this.applicationLockClient = applicationLockClient;
     }
 
+    // 뱡원에 해당 날짜의 예약된 예약이 있는지 확인한다.
     @Transactional(readOnly = true)
     public List<FindHospitalReservationDto> findAllReservationByHospIdAndReservationDate(Long hospId, LocalDate reservationAt){
         return hospitalReservationRepository.findAllByHospitalIdAndReservationDate(hospId, reservationAt);
     }
+
 
     @Transactional
     public Boolean createReservation(HospitalReservationEntity reservation){
@@ -51,7 +54,7 @@ public class HospitalReservationService {
     public ReservationIsvalidAndLockResponse isValidReservaion(ReservationSaveRequest request){
         // 레디스에 예약중인지 체크
         if(!applicationLockClient.isvalidRedisKey(request.getHospId(), request.getReservationAt(), request.getReservationTime())) {
-            throw new RuntimeException();
+            throw new RedisException.RedisAlreadyExitException();
         }
         // 키값을 락을 걸어 키를 레디스에 저장후 락을 푼다.
         String redisKey = reservationLock(request);
@@ -69,11 +72,12 @@ public class HospitalReservationService {
     public String reservationLock(ReservationSaveRequest request){
         return redisLock.lockReservation(request.getHospId(), request.getReservationAt(), request.getReservationTime());
     }
-
+    // 예약 아이디로 예약에 연결된 결제 정보를 가져온다.
     @Transactional(readOnly = true)
     public FindOneHospitalReservationPaymentDto findOneHospitalReservation(Long hospitalReservationId){
         return hospitalReservationRepository.findOneHospitalReservation(hospitalReservationId);
     }
+    // 한 유저의 예약 정보를 가져온다.
     @Transactional(readOnly = true)
     public HospitalReservationPageResponse findAllHospitalReservationByUserId(String providerId, String type, int page, int size){
         Pageable pageable = PageRequest.of(page - 1, size);

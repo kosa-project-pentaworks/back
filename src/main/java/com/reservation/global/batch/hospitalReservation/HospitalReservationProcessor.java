@@ -17,14 +17,9 @@ public class HospitalReservationProcessor implements ItemProcessor<HospitalReser
     public HospitalReservationEntity process(HospitalReservationEntity item) throws Exception {
         HospitalReservationEntity updateHospitalReservation = item;
         LocalDate now = LocalDate.now();
-        System.out.println("1111111111111");
         entityManager.merge(updateHospitalReservation.getPayment());
-        System.out.println("222222222222222");
         PaymentEntity updatePayment = updateHospitalReservation.getPayment().updateStatus(now);
-
-        System.out.println("333333333333333");
         updateHospitalReservation = updateHospitalReservation.updateStatus(now, updatePayment);
-        System.out.println("4444444444444");
         return updateHospitalReservation;
     }
 }

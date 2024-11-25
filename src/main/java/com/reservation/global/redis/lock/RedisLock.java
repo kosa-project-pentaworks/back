@@ -1,5 +1,6 @@
 package com.reservation.global.redis.lock;
 
+import com.reservation.global.exception.RedisException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.LockAcquisitionException;
@@ -29,9 +30,9 @@ public class RedisLock {
         String key = hospId + ":" + formattedDate + ":" + formattedTime;
         RLock lock = redissonClient.getLock(key);
         try {
-            boolean available = lock.tryLock(10, 20, TimeUnit.SECONDS);
+            boolean available = lock.tryLock(5, 10, TimeUnit.SECONDS);
             if(!available) {
-                throw new RuntimeException();
+                throw new RedisException.RedisAlreadyExitException();
             }
             return hospitalReservationServiceWithLock.getLock(key);
         } catch (InterruptedException e) {
