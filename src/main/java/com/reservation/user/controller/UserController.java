@@ -1,6 +1,7 @@
 package com.reservation.user.controller;
 
 import com.reservation.global.response.CustomApiResponse;
+import com.reservation.global.security.filter.JwtTokenProvider;
 import com.reservation.user.controller.request.UserModificationRequest;
 import com.reservation.user.controller.request.UserRegistrationRequest;
 import com.reservation.user.service.command.SocialUserModificationCommand;
@@ -8,10 +9,7 @@ import com.reservation.user.service.command.UserRegistrationCommand;
 import com.reservation.user.service.response.DetailSocialUserResponse;
 import com.reservation.user.service.response.SocialUserModificationResponse;
 import com.reservation.user.service.response.UserRegistrationResponse;
-import com.reservation.user.service.usecase.DeleteUserUseCase;
-import com.reservation.user.service.usecase.FetchUserUseCase;
-import com.reservation.user.service.usecase.ModifyUserUseCase;
-import com.reservation.user.service.usecase.RegisterUserUseCase;
+import com.reservation.user.service.usecase.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +22,9 @@ public class UserController {
     private final RegisterUserUseCase registerUserUseCase;
     private final ModifyUserUseCase modifyUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
+    private final GradeUseCase gradeUseCase;
 
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/{providerId}")
     public CustomApiResponse<DetailSocialUserResponse> findSocialUserByProviderId(@PathVariable String providerId) {

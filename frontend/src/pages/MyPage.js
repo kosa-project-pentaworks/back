@@ -12,6 +12,7 @@ function MyPage() {
             state: '',
             zipCode: '',
         },
+        role: '',
     });
     const [loading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
@@ -57,6 +58,7 @@ function MyPage() {
                     state: address.state || '',
                     zipCode: address.zipCode || '',
                 },
+                role: data.role || '권한 정보 없음',
             });
 
             setFormValues({
