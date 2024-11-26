@@ -169,7 +169,6 @@ function Main() {
                         </div>
                     ))}
                 </div>
-
                 <div className="pagenav">
                     {hospitalPages.previous && (
                         <button onClick={() => onClickSelectPage(hospitalPages.number - 1)}>
