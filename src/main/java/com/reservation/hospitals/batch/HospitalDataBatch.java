@@ -30,7 +30,6 @@ public class HospitalDataBatch {
     @Bean
     public Job hospitalDataJob(){
         LocalDateTime localDateTime = LocalDateTime.now();
-        System.out.println("배치시간==>> " + localDateTime);
         return new JobBuilder("hospitalDataJob", jobRepository)
             .start(hospitalDataStep())
             .build();

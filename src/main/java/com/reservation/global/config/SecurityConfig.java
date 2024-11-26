@@ -41,6 +41,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                 auth.requestMatchers(
                                 "/",
+                                "/dashboard",
                                 "/api/v1/user/register",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/callback",
