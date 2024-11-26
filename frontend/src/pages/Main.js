@@ -194,13 +194,11 @@ function Main() {
             <ReservationModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                selectedHospital={selectedHospital}
-            />
+                selectedHospital={selectedHospital}/>
             <ReviewListModal
                 isOpen={selectedReviewModalOpen}
                 onClose={() => setSelectedReviewModalOpen(false)}
-                hospital={selectedHospital}
-            />
+                hospital={selectedHospital}/>
         </div>
     );
 }
