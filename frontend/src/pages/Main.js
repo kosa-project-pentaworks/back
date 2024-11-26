@@ -109,8 +109,7 @@ function Main() {
                         className="keyword"
                         type="text"
                         value={searchInput.keyWord}
-                        onChange={onChangeKeyWord}
-                    />
+                        onChange={onChangeKeyWord}/>
                     <button className="searchButton" onClick={onClickSearch}>
                         병원 조회
                     </button>
