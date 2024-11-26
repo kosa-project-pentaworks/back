@@ -25,7 +25,7 @@ function Signup() {
                 password,
             });
             if (response.data.success) {
-                navigate('/admin-login'); // 회원가입 성공 시 로그인 페이지로 이동
+                navigate('/login'); // 회원가입 성공 시 로그인 페이지로 이동
             } else {
                 setErrorMessage(response.data.message || '회원가입 실패');
             }
