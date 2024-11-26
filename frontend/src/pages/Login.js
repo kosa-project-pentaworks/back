@@ -33,14 +33,14 @@ function Login({setIsLoggedIn}) {
 
             if (response.data.success) {
                 // 토큰 처리: 객체이든 문자열이든 저장 가능하도록 처리
-                const token = typeof response.data.data === 'object'
-                    ? JSON.stringify(response.data.data) // 객체라면 JSON 문자열로 변환
-                    : response.data.data; // 문자열이라면 그대로 사용
-
-                localStorage.setItem('token', token);
+                // const token = typeof response.data.data === 'object'
+                //     ? JSON.stringify(response.data.data) // 객체라면 JSON 문자열로 변환
+                //     : response.data.data; // 문자열이라면 그대로 사용
+                //
+                // localStorage.setItem('token', token);
 
                 // 이후 페이지 이동 또는 로그인 처리 로직 추가
-                setIsLoggedIn(true)
+                setIsLoggedIn(false)
 
                 window.location.href = "http://52.79.220.59:8090/admin/selectUserListAll";
             } else {
@@ -53,7 +53,7 @@ function Login({setIsLoggedIn}) {
     };
 
     const handleAdminSignup = () => {
-        navigate('/admin-signup');
+        navigate('/signup');
     };
 
     return (

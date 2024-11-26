@@ -74,7 +74,7 @@ function App() {
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container">
-                    <Link className="navbar-brand" to="/">Hospital Go</Link>
+                    <Link className="navbar-brand" to="/dashboard">Hospital Go</Link>
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav ms-auto">
                             {!isLoggedIn ? (

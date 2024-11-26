@@ -6,7 +6,7 @@ function ProtectedRoute({children}) {
 
     // 토큰이 없으면 로그인 페이지로 리디렉션
     if (!token) {
-        return <Navigate to="/login"/>;
+        return <Navigate to="/"/>;
     }
 
     // 토큰이 있으면 자식 컴포넌트를 렌더링
