@@ -8,21 +8,22 @@ import ReviewListModal from "./ReviewListModal";
 import { StarIcon } from "@heroicons/react/solid";
 
 function Dashboard() {
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달창 열때
-  const [selectedHospital, setSelectedHospital] = useState(null); // 모달창 열었을때 정보
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedHospital, setSelectedHospital] = useState(null);
   const token = localStorage.getItem("token");
   const providerId = jwtDecode(token).userId;
   const [selectedReviewModalOpen, setSelectedReviewModalOpen] = useState(null);
+  const [img, setImg] = useState([]);
 
   const findUserInfo = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/v1/user/${providerId}`, {
-        headers: { Authorization: `Bearer ${token}` }, // 인증 헤더 추가
-        withCredentials: true, // CORS 인증 설정
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
       })
       .then((response) => {
         if (response.data.success) {
-          // setSearch({ ...search, sidoCdNm: "경기" }); 여기서 회원 주소 입력
+          // setSearch({ ...search, sidoCdNm: "경기" });
         }
       });
   };
@@ -69,6 +70,7 @@ function Dashboard() {
   const onClickSearch = () => {
     setSearch({ ...searchInput });
   };
+
   useEffect(() => {
     findUserInfo();
   }, []);
@@ -76,6 +78,14 @@ function Dashboard() {
   useEffect(() => {
     getHospitals();
   }, [search]);
+
+  useEffect(() => {
+    const arr = [];
+    for (let i = 0; i < 10; i++) {
+      arr.push(Math.floor(Math.random() * 18) + 1);
+    }
+    setImg(arr);
+  }, [hospitalPages]);
 
   const onChangeKeyWord = (e) => {
     setSearchInput({ ...searchInput, keyWord: e.target.value });
@@ -105,7 +115,6 @@ function Dashboard() {
   };
 
   const openReview = (hospital) => {
-    console.log("리뷰보기");
     setSelectedReviewModalOpen(true);
     setSelectedHospital(hospital);
   };
@@ -118,7 +127,6 @@ function Dashboard() {
           <input
             className="keyword"
             type="text"
-            id=""
             value={searchInput.keyWord}
             onChange={onChangeKeyWord}
           />
@@ -130,72 +138,51 @@ function Dashboard() {
       </div>
       <div className="container mt-4">
         <div className="hospitalContainer">
-          {hospitalPages.hospitals.map((item) => (
-            <div className="hospitalList" onClick={() => openReview(item)}>
+          {hospitalPages.hospitals.map((item, idx) => (
+            <div
+              key={idx}
+              className="hospitalList"
+              onClick={() => openReview(item)}
+            >
               <div className="hospitalInfo">
                 <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
                   <li className="highlight">{item.yadmNm}</li>
-                  <li
-                    style={{ fontSize: "0.9em", color: "rgba(0, 0, 0, 0.6)" }}
-                  >
-                    {item.addr}
-                  </li>
-                  <li
-                    style={{ fontSize: "0.9em", color: "rgba(0, 0, 0, 0.6)" }}
-                  >
-                    {item.telno}
-                  </li>
-                  <div className="info-row">
-                    {item.reviewCount === 0 ? (
-                      <div className="info-details">
-                        <div className="flex-row">
-                          <StarIcon
-                            style={{ width: "15px", height: "15px" }}
-                            className="text-yellow-500"
-                          />
-                          <span className="no-wrap">수집중</span>
-                        </div>
-                        <button
-                          className="no-wrap"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleReservationClick(item);
-                          }}
-                        >
-                          예약하기
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="info-details">
-                        <span className="star">
-                          <StarIcon
-                            style={{ width: "15px", height: "15px" }}
-                            className="text-yellow-500"
-                          />
-                          {item.ratingAvg}
-                        </span>
-                        &nbsp;
-                        <span className="no-wrap">리뷰 {item.reviewCount}</span>
-                        <button
-                          className="no-wrap"
-                          style={{ marginLeft: "6px" }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleReservationClick(item);
-                          }}
-                        >
-                          예약하기
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <li className="hospital-details">{item.addr}</li>
+                  <li className="hospital-details">{item.telno}</li>
                 </ul>
+                {/* `div`를 `ul` 밖으로 이동 */}
+                <div className="info-row">
+                  <div className="info-details">
+                    <div className="rating-container">
+                      <div className="rating-box">
+                        <StarIcon
+                          style={{ width: "15px", height: "15px" }}
+                          className="text-yellow-500"
+                        />
+                        {item.reviewCount === 0 ? (
+                          <span>수집중</span>
+                        ) : (
+                          <span>{item.ratingAvg}</span>
+                        )}
+                      </div>
+                      {item.reviewCount !== 0 && (
+                        <span className="no-wrap">리뷰 {item.reviewCount}</span>
+                      )}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleReservationClick(item);
+                      }}
+                    >
+                      예약하기
+                    </button>
+                  </div>
+                </div>
               </div>
               <div className="hospitalImage">
                 <img
-                  src={`/hospitalImage/hosp${
-                    Math.floor(Math.random() * 18) + 1
-                  }.jpg`}
+                  src={`/hospitalImage/hosp${img[idx]}.jpg`}
                   alt="Hospital"
                 />
               </div>
@@ -204,41 +191,32 @@ function Dashboard() {
         </div>
 
         <div className="pagenav">
-          {hospitalPages.previous ? (
+          {hospitalPages.previous && (
             <button onClick={() => onClickSelectPage(hospitalPages.number - 1)}>
               이전
             </button>
-          ) : null}
+          )}
           {pageNums.map((item) => (
             <button
               key={item}
               onClick={() => onClickSelectPage(item)}
-              style={{
-                backgroundColor:
-                  hospitalPages.number === item ? "#007bff" : "transparent", // 현재 페이지일 경우 강조
-                color: hospitalPages.number === item ? "white" : "blue", // 강조된 텍스트 색상
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                padding: "8px 12px",
-                margin: "0 4px",
-                cursor: "pointer",
-              }}
+              className={hospitalPages.number === item ? "active" : ""}
             >
               {item}
             </button>
           ))}
-          {hospitalPages.next ? (
+          {hospitalPages.next && (
             <button onClick={() => onClickSelectPage(hospitalPages.number + 1)}>
               다음
             </button>
-          ) : null}
+          )}
         </div>
       </div>
       <ReservationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         selectedHospital={selectedHospital}
-      ></ReservationModal>
+      />
       <ReviewListModal
         isOpen={selectedReviewModalOpen}
         onClose={() => setSelectedReviewModalOpen(false)}

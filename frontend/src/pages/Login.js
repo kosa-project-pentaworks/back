@@ -51,9 +51,9 @@ function Login({setIsLoggedIn}) {
         }
     };
 
-    const handleAdminSignup = () => {
-        navigate('/signup');
-    };
+    // const handleAdminSignup = () => {
+    //     navigate('/signup');
+    // };
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -83,7 +83,6 @@ function Login({setIsLoggedIn}) {
                     </div>
                     <button type="submit" className="btn btn-primary w-100">로그인</button>
                 </form>
-                <button onClick={handleAdminSignup} className="btn btn-warning w-100 mt-3">회원가입</button>
             </div>
         </div>
     );

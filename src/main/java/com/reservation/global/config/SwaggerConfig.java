@@ -13,7 +13,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         Info info = new Info()
                 .title("Hospital Go. API")
-                .description("Hospital Go. API spec.");
+                .description("전체 API 총 20개가 개발되었습니다.");
 
         return new OpenAPI()
                 .components(new Components())
