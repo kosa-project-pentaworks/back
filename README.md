@@ -82,3 +82,7 @@ npm run start
 ```
 
 http://localhost:3000 으로 접근합니다.
+
+## 시스템 아키텍처
+
+![image](https://github.com/user-attachments/assets/d0935126-9448-47a3-b8e9-339ac21242bb)
