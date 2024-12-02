@@ -83,6 +83,82 @@ npm run start
 
 http://localhost:3000 으로 접근합니다.
 
+## ERD (Entity-Relation Diagram)
+Table TB_USER_MASTER {
+  user_id BIGINT [pk, not null]
+  provider_id VARCHAR(255)
+  email VARCHAR(100)
+  username VARCHAR(50)
+  phone VARCHAR(11)
+  role VARCHAR(20) [not null]
+  provider VARCHAR(20)
+  status VARCHAR(20) [not null]
+  zipcode VARCHAR(20)
+  address_line1 VARCHAR(50)
+  address_line2 VARCHAR(50)
+  city VARCHAR(50)
+  state VARCHAR(50)
+  created_at DATETIME [not null]
+  created_by VARCHAR(50) [not null]
+  modified_at DATETIME [not null]
+  modified_by VARCHAR(50) [not null]
+}
+
+Table TB_HOSPITAL_MASTER {
+  hosp_id BIGINT [pk, not null]
+  cl_cd INT
+  addr VARCHAR(150) [not null]
+  cl_cd_nm VARCHAR(16) [not null]
+  emdong_nm VARCHAR(16)
+  estb_dd VARCHAR(10)
+  hosp_url VARCHAR(100)
+  post_no INT [not null]
+  sggu_cd INT [not null]
+  sggu_cd_nm VARCHAR(20) [not null]
+  sido_cd INT [not null]
+  sido_cd_nm VARCHAR(10) [not null]
+  telno VARCHAR(15)
+  yadm_nm VARCHAR(60) [not null]
+  ykiho VARCHAR(255) [not null]
+  hosp_status VARCHAR(5) [not null]
+}
+
+Table TB_HOSPITAL_RESERVATION_HISTORY {
+  hosp_reservation_id BIGINT [pk, not null]
+  reservation_at DATETIME [not null]
+  reservation_time VARCHAR(10) [not null]
+  created_at DATETIME [not null]
+  modified_at DATETIME
+  reservation_status VARCHAR(20) [not null]
+  user_id BIGINT [not null, ref: > TB_USER_MASTER.user_id]
+  payment_id BIGINT [not null]
+  hosp_id BIGINT [not null, ref: > TB_HOSPITAL_MASTER.hosp_id]
+}
+
+Table TB_PAYMENT_HISTORY {
+  payment_id BIGINT [pk, not null]
+  userid BIGINT [not null, ref: > TB_USER_MASTER.user_id]
+  hosp_id BIGINT [not null, ref: > TB_HOSPITAL_MASTER.hosp_id]
+  import_uid VARCHAR(200) [not null]
+  payment_status VARCHAR(12) [not null]
+  amount INT [not null]
+  created_at DATETIME [not null]
+  modified_at DATETIME
+}
+
+Table TB_USER_TOKEN {
+  token_id VARCHAR(255) [pk, not null]
+  user_id BIGINT [not null, ref: > TB_USER_MASTER.user_id]
+  access_token VARCHAR(255) [not null]
+  refresh_token VARCHAR(255) [not null]
+  access_token_expires_at DATETIME [not null]
+  refresh_token_expires_at DATETIME [not null]
+  created_at DATETIME [not null]
+  created_by VARCHAR(50) [not null]
+  modified_at DATETIME [not null]
+  modified_by VARCHAR(50) [not null]
+}
+
 ## 시스템 아키텍처
 
 ![image](https://github.com/user-attachments/assets/d0935126-9448-47a3-b8e9-339ac21242bb)
