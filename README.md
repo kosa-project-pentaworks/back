@@ -8,6 +8,8 @@ MSA Full Stack 8차
 
 배포 주소: http://52.79.220.59/
 
+종료 보고서: https://www.canva.com/design/DAGXBzMqUKA/388jFm5KchO8nsjE_5LfrA/view?utm_content=DAGXBzMqUKA&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h898de2475e
+
 팀 소개
 * 정현목 (팀장): 서비스 제공의 필요한 전반적인 배치성 작업, 결제 동시성 제어
 * 박상준: 회원 인증과 시스템 아키텍처 설계 및 인프라 구축
